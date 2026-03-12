@@ -3,6 +3,8 @@ package com.roleradar.auth.service;
 import com.roleradar.auth.domain.User;
 import com.roleradar.auth.dto.RegisterRequest;
 import com.roleradar.auth.dto.UserResponse;
+import com.roleradar.auth.event.AuthEventPublisher;
+import com.roleradar.auth.event.EmailVerificationRequestedEvent;
 import com.roleradar.auth.exception.BadRequestException;
 import com.roleradar.auth.exception.ConflictException;
 import com.roleradar.auth.mapper.AuthMapper;
@@ -19,15 +21,17 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final AuthMapper authMapper;
     private final EmailVerificationTokenService emailVerificationTokenService;
+    private final AuthEventPublisher authEventPublisher;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthMapper authMapper,
-                       EmailVerificationTokenService emailVerificationTokenService) {
+                       EmailVerificationTokenService emailVerificationTokenService, AuthEventPublisher authEventPublisher) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authMapper = authMapper;
         this.emailVerificationTokenService = emailVerificationTokenService;
+        this.authEventPublisher = authEventPublisher;
     }
 
     public UserResponse register(RegisterRequest request) {
@@ -55,7 +59,17 @@ public class AuthService {
 
         User savedUser = userRepository.save(user);
 
-        // TODO kafka event here for notification service
+        LocalDateTime expiresAt = user.getEmailVerificationTokenExpiresAt();
+
+        authEventPublisher.publishEmailVerificationRequested(
+                new EmailVerificationRequestedEvent(
+                        savedUser.getId(),
+                        savedUser.getEmail(),
+                        savedUser.getUsername(),
+                        rawToken,
+                        expiresAt
+                )
+        );
 
         return authMapper.toUserResponse(savedUser);
     }
