@@ -117,7 +117,7 @@ public class AuthService {
         }
 
         if (user.getStatus() != UserStatus.ACTIVE || !user.isEmailVerified()) {
-            throw new UnauthorizedException("Email is not verified.");
+            throw new UnauthorizedException("Email is not verified. Check your mailbox.");
         }
 
         return issueTokens(user);

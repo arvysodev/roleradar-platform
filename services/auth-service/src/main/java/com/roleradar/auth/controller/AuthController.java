@@ -1,5 +1,7 @@
 package com.roleradar.auth.controller;
 
+import com.roleradar.auth.dto.AuthTokensResponse;
+import com.roleradar.auth.dto.LoginRequest;
 import com.roleradar.auth.dto.RegisterRequest;
 import com.roleradar.auth.dto.UserResponse;
 import com.roleradar.auth.service.AuthService;
@@ -27,5 +29,11 @@ public class AuthController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void verifyEmail(@RequestParam("token") String token) {
         authService.verifyEmail(token);
+    }
+
+    @PostMapping("/login")
+    @ResponseStatus(HttpStatus.OK)
+    public AuthTokensResponse login(@Valid @RequestBody LoginRequest request) {
+        return authService.login(request);
     }
 }
