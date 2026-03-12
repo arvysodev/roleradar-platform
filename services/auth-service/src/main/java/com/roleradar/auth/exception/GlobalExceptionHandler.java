@@ -32,6 +32,11 @@ public class GlobalExceptionHandler {
         return problem(HttpStatus.CONFLICT, "Conflict", ex.getMessage(), request);
     }
 
+    @ExceptionHandler(UnauthorizedException.class)
+    public ProblemDetail handleUnauthorized(UnauthorizedException ex, HttpServletRequest request) {
+        return problem(HttpStatus.UNAUTHORIZED, "Unauthorized", ex.getMessage(), request);
+    }
+
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ProblemDetail handleDataIntegrity(DataIntegrityViolationException ex, HttpServletRequest request) {
         return problem(
