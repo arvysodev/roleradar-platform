@@ -106,7 +106,7 @@ public class AuthService {
         userRepository.save(user);
     }
 
-    public AuthTokensResponse login(LoginRequest request) {
+    public AuthTokens login(LoginRequest request) {
         String normalizedEmail = request.email().trim().toLowerCase();
 
         User user = userRepository.findByEmail(normalizedEmail)
@@ -123,7 +123,41 @@ public class AuthService {
         return issueTokens(user);
     }
 
-    private AuthTokensResponse issueTokens(User user) {
+    public AuthTokens refresh(String rawRefreshToken) {
+        String refreshTokenHash = tokenHasher.sha256Base64Url(rawRefreshToken);
+
+        RefreshToken storedToken = refreshTokenRepository.findByTokenHash(refreshTokenHash)
+                .orElseThrow(() -> new UnauthorizedException("Invalid refresh token."));
+
+        if (storedToken.isRevoked() || storedToken.isExpired()) {
+            throw new UnauthorizedException("Refresh token is no longer valid.");
+        }
+
+        User user = storedToken.getUser();
+
+        if (user.getStatus() != UserStatus.ACTIVE || !user.isEmailVerified()) {
+            throw new UnauthorizedException("User is not active.");
+        }
+
+        storedToken.revoke();
+        refreshTokenRepository.save(storedToken);
+
+        return issueTokens(user);
+    }
+
+    public void logout(String rawRefreshToken) {
+        String refreshTokenHash = tokenHasher.sha256Base64Url(rawRefreshToken);
+
+        refreshTokenRepository.findByTokenHash(refreshTokenHash)
+                .ifPresent(token -> {
+                    if (!token.isRevoked()) {
+                        token.revoke();
+                        refreshTokenRepository.save(token);
+                    }
+                });
+    }
+
+    private AuthTokens issueTokens(User user) {
         String accessToken = jwtService.generateAccessToken(user);
 
         String rawRefreshToken = generateRefreshToken();
@@ -137,8 +171,7 @@ public class AuthService {
 
         refreshTokenRepository.save(refreshToken);
 
-        return new AuthTokensResponse(
-                "Bearer",
+        return new AuthTokens(
                 accessToken,
                 jwtService.getAccessTokenTtlSeconds(),
                 rawRefreshToken
@@ -149,5 +182,9 @@ public class AuthService {
         byte[] bytes = new byte[32];
         secureRandom.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
+    }
+
+    public long getRefreshTokenTtlSeconds() {
+        return jwtService.getRefreshTokenTtlSeconds();
     }
 }
