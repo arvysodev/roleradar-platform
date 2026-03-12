@@ -67,6 +67,13 @@ services:
       KAFKA_CLUSTERS_0_NAME: roleradar-local
       KAFKA_CLUSTERS_0_BOOTSTRAPSERVERS: kafka:29092
 
+  mailpit:
+    image: axllent/mailpit:latest
+    container_name: roleradar-mailpit
+    ports:
+      - "8025:8025"
+      - "1025:1025"
+
 volumes:
   postgres_auth_data:
   postgres_vacancy_data:

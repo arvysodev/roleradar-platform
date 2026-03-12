@@ -1,4 +1,4 @@
-package com.roleradar.notification_service;
+package com.roleradar.notification;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

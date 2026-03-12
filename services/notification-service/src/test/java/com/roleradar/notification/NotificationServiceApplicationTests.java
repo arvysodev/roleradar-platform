@@ -1,4 +1,4 @@
-package com.roleradar.notification_service;
+package com.roleradar.notification;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

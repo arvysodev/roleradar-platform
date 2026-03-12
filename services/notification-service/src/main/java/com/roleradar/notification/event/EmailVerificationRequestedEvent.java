@@ -1,4 +1,4 @@
-package com.roleradar.auth.event;
+package com.roleradar.notification.event;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
