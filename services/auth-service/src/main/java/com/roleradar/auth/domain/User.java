@@ -12,7 +12,6 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Setter
 @Table(name = "users")
 public class User {
 

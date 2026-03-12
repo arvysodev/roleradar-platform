@@ -29,6 +29,13 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
+security:
+  jwt:
+    secret: HVeYYjkSGsMHDHa9jkOyMD4IqS6PDW4CLFbTqRC1O3AE9kSNc7wqKxbhiOwZQ1GKV2PzqH1L8tvOAyONzPmPxV
+    issuer: roleradar-auth-service
+    access-token-ttl-seconds: 3600
+    refresh-token-ttl-seconds: 2592000
+
 springdoc:
   api-docs:
     path: /v3/api-docs
