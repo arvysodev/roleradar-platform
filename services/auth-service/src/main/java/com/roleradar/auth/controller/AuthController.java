@@ -22,4 +22,10 @@ public class AuthController {
     public UserResponse register(@Valid @RequestBody RegisterRequest request) {
         return authService.register(request);
     }
+
+    @GetMapping("/verify-email")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void verifyEmail(@RequestParam("token") String token) {
+        authService.verifyEmail(token);
+    }
 }

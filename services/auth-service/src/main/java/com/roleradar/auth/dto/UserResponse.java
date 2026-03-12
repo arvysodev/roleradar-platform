@@ -1,8 +1,16 @@
 package com.roleradar.auth.dto;
 
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 public record UserResponse(
-        Long id,
+        UUID id,
         String email,
-        String role
+        String username,
+        String role,
+        String status,
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt,
+        boolean emailVerified
 ) {
 }

@@ -1,28 +1,93 @@
 package com.roleradar.auth.domain;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Entity
-@Table(name = "users")
+import java.time.LocalDateTime;
+import java.util.UUID;
+
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Entity
 @Setter
-@NoArgsConstructor
+@Table(name = "users")
 public class User {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+    public User(String username, String email, String passwordHash) {
+        this.username = username.strip().toLowerCase();
+        this.email = email.strip().toLowerCase();
+        this.passwordHash = passwordHash;
+        this.role = Role.USER;
+        this.status = UserStatus.PENDING;
+    }
 
-    @Column(nullable = false, unique = true)
+    @Id
+    @GeneratedValue
+    @Column(nullable = false, updatable = false)
+    private UUID id;
+
+    @Column(nullable = false, unique = true, length = 255)
     private String email;
 
-    @Column(nullable = false)
+    @Column(nullable = false, unique = true, length = 50)
+    private String username;
+
+    @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
     private Role role;
+
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 20)
+    private UserStatus status;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
+
+    @Column(name = "updated_at", nullable = false)
+    private LocalDateTime updatedAt;
+
+    @Column(name = "email_verified_at")
+    private LocalDateTime emailVerifiedAt;
+
+    @Column(name = "email_verification_token_hash")
+    private String emailVerificationTokenHash;
+
+    @Column(name = "email_verification_token_expires_at")
+    private LocalDateTime emailVerificationTokenExpiresAt;
+
+    public boolean isEmailVerified() {
+        return emailVerifiedAt != null;
+    }
+
+    public void startEmailVerification(String tokenHash, LocalDateTime expiresAt) {
+        this.emailVerificationTokenHash = tokenHash;
+        this.emailVerificationTokenExpiresAt = expiresAt;
+    }
+
+    public void verifyEmail(LocalDateTime verifiedAt) {
+        this.emailVerifiedAt = verifiedAt;
+        this.status = UserStatus.ACTIVE;
+        this.emailVerificationTokenHash = null;
+        this.emailVerificationTokenExpiresAt = null;
+    }
+
+    @PrePersist
+    void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        if (createdAt == null) createdAt = now;
+        if (updatedAt == null) updatedAt = now;
+        if (role == null) role = Role.USER;
+        if (status == null) status = UserStatus.PENDING;
+    }
+
+    @PreUpdate
+    void preUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 }
