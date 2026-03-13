@@ -3,7 +3,6 @@ package com.roleradar.auth.service;
 import com.roleradar.auth.domain.RefreshToken;
 import com.roleradar.auth.domain.User;
 import com.roleradar.auth.domain.UserStatus;
-import com.roleradar.auth.dto.AuthTokensResponse;
 import com.roleradar.auth.dto.LoginRequest;
 import com.roleradar.auth.dto.RegisterRequest;
 import com.roleradar.auth.dto.UserResponse;
@@ -19,6 +18,7 @@ import com.roleradar.auth.security.JwtService;
 import com.roleradar.auth.security.TokenHasher;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
@@ -28,29 +28,34 @@ import java.util.Base64;
 public class AuthService {
 
     private final UserRepository userRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final PasswordEncoder passwordEncoder;
     private final AuthMapper authMapper;
     private final EmailVerificationTokenService emailVerificationTokenService;
     private final AuthEventPublisher authEventPublisher;
-    private final RefreshTokenRepository refreshTokenRepository;
     private final JwtService jwtService;
     private final TokenHasher tokenHasher;
     private final SecureRandom secureRandom = new SecureRandom();
 
     public AuthService(UserRepository userRepository,
+                       RefreshTokenRepository refreshTokenRepository,
                        PasswordEncoder passwordEncoder,
                        AuthMapper authMapper,
-                       EmailVerificationTokenService emailVerificationTokenService, AuthEventPublisher authEventPublisher, RefreshTokenRepository refreshTokenRepository, JwtService jwtService, TokenHasher tokenHasher) {
+                       EmailVerificationTokenService emailVerificationTokenService,
+                       AuthEventPublisher authEventPublisher,
+                       JwtService jwtService,
+                       TokenHasher tokenHasher) {
         this.userRepository = userRepository;
+        this.refreshTokenRepository = refreshTokenRepository;
         this.passwordEncoder = passwordEncoder;
         this.authMapper = authMapper;
         this.emailVerificationTokenService = emailVerificationTokenService;
         this.authEventPublisher = authEventPublisher;
-        this.refreshTokenRepository = refreshTokenRepository;
         this.jwtService = jwtService;
         this.tokenHasher = tokenHasher;
     }
 
+    @Transactional
     public UserResponse register(RegisterRequest request) {
         String normalizedEmail = request.email().trim().toLowerCase();
         String normalizedUsername = request.username().trim().toLowerCase();
@@ -71,12 +76,11 @@ public class AuthService {
 
         String rawToken = emailVerificationTokenService.generateRawToken();
         String tokenHash = emailVerificationTokenService.hashToken(rawToken);
+        LocalDateTime expiresAt = LocalDateTime.now().plusHours(24);
 
-        user.startEmailVerification(tokenHash, LocalDateTime.now().plusHours(24));
+        user.startEmailVerification(tokenHash, expiresAt);
 
         User savedUser = userRepository.save(user);
-
-        LocalDateTime expiresAt = user.getEmailVerificationTokenExpiresAt();
 
         authEventPublisher.publishEmailVerificationRequested(
                 new EmailVerificationRequestedEvent(
@@ -91,6 +95,7 @@ public class AuthService {
         return authMapper.toUserResponse(savedUser);
     }
 
+    @Transactional
     public void verifyEmail(String rawToken) {
         String tokenHash = emailVerificationTokenService.hashToken(rawToken);
 
@@ -117,7 +122,7 @@ public class AuthService {
         }
 
         if (user.getStatus() != UserStatus.ACTIVE || !user.isEmailVerified()) {
-            throw new UnauthorizedException("Email is not verified. Check your mailbox.");
+            throw new UnauthorizedException("Email is not verified.");
         }
 
         return issueTokens(user);
@@ -157,6 +162,10 @@ public class AuthService {
                 });
     }
 
+    public long getRefreshTokenTtlSeconds() {
+        return jwtService.getRefreshTokenTtlSeconds();
+    }
+
     private AuthTokens issueTokens(User user) {
         String accessToken = jwtService.generateAccessToken(user);
 
@@ -182,9 +191,5 @@ public class AuthService {
         byte[] bytes = new byte[32];
         secureRandom.nextBytes(bytes);
         return Base64.getUrlEncoder().withoutPadding().encodeToString(bytes);
-    }
-
-    public long getRefreshTokenTtlSeconds() {
-        return jwtService.getRefreshTokenTtlSeconds();
     }
 }

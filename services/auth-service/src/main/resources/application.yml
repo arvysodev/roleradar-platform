@@ -29,18 +29,20 @@ spring:
       properties:
         spring.json.add.type.headers: false
 
-security:
-  jwt:
-    secret: HVeYYjkSGsMHDHa9jkOyMD4IqS6PDW4CLFbTqRC1O3AE9kSNc7wqKxbhiOwZQ1GKV2PzqH1L8tvOAyONzPmPxV
-    issuer: roleradar-auth-service
-    access-token-ttl-seconds: 3600
-    refresh-token-ttl-seconds: 2592000
-
 springdoc:
   api-docs:
     path: /v3/api-docs
   swagger-ui:
     path: /swagger-ui.html
+
+security:
+  jwt:
+    issuer: http://localhost:8081
+    audience: roleradar-api
+    key-id: auth-rsa-key-1
+    access-token-ttl-seconds: 900
+    refresh-token-ttl-seconds: 2592000
+    private-key-location: ${JWT_PRIVATE_KEY_LOCATION:classpath:keys/jwt-private.pem}
 
 roleradar:
   kafka:

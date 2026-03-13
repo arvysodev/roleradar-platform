@@ -4,6 +4,7 @@ import com.roleradar.auth.dto.AuthTokensResponse;
 import com.roleradar.auth.dto.LoginRequest;
 import com.roleradar.auth.dto.RegisterRequest;
 import com.roleradar.auth.dto.UserResponse;
+import com.roleradar.auth.exception.UnauthorizedException;
 import com.roleradar.auth.security.AccessTokenCookieFactory;
 import com.roleradar.auth.security.RefreshTokenCookieFactory;
 import com.roleradar.auth.service.AuthService;
@@ -63,10 +64,7 @@ public class AuthController {
                         .toString()
         );
 
-        return new AuthTokensResponse(
-                "Bearer",
-                tokens.accessTokenExpiresInSeconds()
-        );
+        return new AuthTokensResponse("Bearer", tokens.accessTokenExpiresInSeconds());
     }
 
     @PostMapping("/refresh")
@@ -90,10 +88,7 @@ public class AuthController {
                         .toString()
         );
 
-        return new AuthTokensResponse(
-                "Bearer",
-                tokens.accessTokenExpiresInSeconds()
-        );
+        return new AuthTokensResponse("Bearer", tokens.accessTokenExpiresInSeconds());
     }
 
     @PostMapping("/logout")
@@ -104,22 +99,18 @@ public class AuthController {
 
         authService.logout(refreshToken);
 
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                accessTokenCookieFactory.createDeleteAccessTokenCookie().toString()
-        );
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                accessTokenCookieFactory.createDeleteAccessTokenCookie().toString());
 
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                refreshTokenCookieFactory.createDeleteRefreshTokenCookie().toString()
-        );
+        response.addHeader(HttpHeaders.SET_COOKIE,
+                refreshTokenCookieFactory.createDeleteRefreshTokenCookie().toString());
     }
 
     private String extractRefreshTokenFromCookies(HttpServletRequest request) {
         Cookie[] cookies = request.getCookies();
 
         if (cookies == null) {
-            throw new com.roleradar.auth.exception.UnauthorizedException("Refresh token cookie is missing.");
+            throw new UnauthorizedException("Refresh token cookie is missing.");
         }
 
         for (Cookie cookie : cookies) {
@@ -128,6 +119,6 @@ public class AuthController {
             }
         }
 
-        throw new com.roleradar.auth.exception.UnauthorizedException("Refresh token cookie is missing.");
+        throw new UnauthorizedException("Refresh token cookie is missing.");
     }
 }

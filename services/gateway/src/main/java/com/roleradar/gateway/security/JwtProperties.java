@@ -1,4 +1,4 @@
-package com.roleradar.auth.security;
+package com.roleradar.gateway.security;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
@@ -6,9 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public record JwtProperties(
         String issuer,
         String audience,
-        String keyId,
-        long accessTokenTtlSeconds,
-        long refreshTokenTtlSeconds,
-        String privateKeyLocation
+        String jwkSetUri,
+        String accessTokenCookieName
 ) {
 }
