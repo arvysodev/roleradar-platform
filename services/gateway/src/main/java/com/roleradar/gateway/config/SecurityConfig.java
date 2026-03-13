@@ -14,6 +14,8 @@ import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
 import org.springframework.security.oauth2.core.OAuth2TokenValidator;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.security.web.server.SecurityWebFilterChain;
+import org.springframework.security.web.server.csrf.CookieServerCsrfTokenRepository;
+import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttributeHandler;
 
 @Configuration
 @EnableReactiveMethodSecurity
@@ -25,10 +27,22 @@ public class SecurityConfig {
                                                      ReactiveJwtDecoder jwtDecoder,
                                                      JwtProperties jwtProperties) {
         return http
-                .csrf(ServerHttpSecurity.CsrfSpec::disable) // TODO complete csrf defence
+                .csrf(csrf -> csrf
+                        .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
+                        .csrfTokenRequestHandler(new ServerCsrfTokenRequestAttributeHandler())
+                )
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(
-                                "/api/v1/auth/**"
+                                "/csrf",
+                                "/api/v1/auth/register",
+                                "/api/v1/auth/login",
+                                "/api/v1/auth/refresh",
+                                "/api/v1/auth/logout",
+                                "/api/v1/auth/verify-email",
+                                "/swagger-ui/**",
+                                "/swagger-ui.html",
+                                "/v3/api-docs/**",
+                                "/aggregate/**"
                         ).permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated()

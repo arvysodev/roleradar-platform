@@ -1,9 +1,6 @@
 package com.roleradar.auth.controller;
 
-import com.roleradar.auth.dto.AuthTokensResponse;
-import com.roleradar.auth.dto.LoginRequest;
-import com.roleradar.auth.dto.RegisterRequest;
-import com.roleradar.auth.dto.UserResponse;
+import com.roleradar.auth.dto.*;
 import com.roleradar.auth.exception.UnauthorizedException;
 import com.roleradar.auth.security.AccessTokenCookieFactory;
 import com.roleradar.auth.security.RefreshTokenCookieFactory;
@@ -15,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -104,6 +104,12 @@ public class AuthController {
 
         response.addHeader(HttpHeaders.SET_COOKIE,
                 refreshTokenCookieFactory.createDeleteRefreshTokenCookie().toString());
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
+    public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
+        return authService.getCurrentUser(jwt);
     }
 
     private String extractRefreshTokenFromCookies(HttpServletRequest request) {

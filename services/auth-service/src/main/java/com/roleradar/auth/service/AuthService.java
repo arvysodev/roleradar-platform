@@ -4,6 +4,7 @@ import com.roleradar.auth.domain.RefreshToken;
 import com.roleradar.auth.domain.User;
 import com.roleradar.auth.domain.UserStatus;
 import com.roleradar.auth.dto.LoginRequest;
+import com.roleradar.auth.dto.MeResponse;
 import com.roleradar.auth.dto.RegisterRequest;
 import com.roleradar.auth.dto.UserResponse;
 import com.roleradar.auth.event.AuthEventPublisher;
@@ -17,12 +18,14 @@ import com.roleradar.auth.repository.UserRepository;
 import com.roleradar.auth.security.JwtService;
 import com.roleradar.auth.security.TokenHasher;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
 import java.time.LocalDateTime;
 import java.util.Base64;
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -160,6 +163,17 @@ public class AuthService {
                         refreshTokenRepository.save(token);
                     }
                 });
+    }
+
+    public MeResponse getCurrentUser(Jwt jwt) {
+        List<String> roles = jwt.getClaimAsStringList("roles");
+
+        return new MeResponse(
+                jwt.getSubject(),
+                jwt.getClaimAsString("email"),
+                jwt.getClaimAsString("preferred_username"),
+                roles == null ? List.of() : roles
+        );
     }
 
     public long getRefreshTokenTtlSeconds() {

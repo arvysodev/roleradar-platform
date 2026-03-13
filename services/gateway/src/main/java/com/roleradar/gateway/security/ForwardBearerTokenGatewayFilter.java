@@ -20,20 +20,21 @@ public class ForwardBearerTokenGatewayFilter implements GlobalFilter, Ordered {
                 .filter(Authentication::isAuthenticated)
                 .filter(auth -> auth instanceof JwtAuthenticationToken)
                 .cast(JwtAuthenticationToken.class)
-                .map(jwtAuth -> jwtAuth.getToken().getTokenValue())
-                .flatMap(token -> {
-                    ServerWebExchange mutatedExchange = exchange.mutate()
+                .map(jwtAuth -> {
+                    String token = jwtAuth.getToken().getTokenValue();
+
+                    return exchange.mutate()
                             .request(request -> request.headers(headers -> {
-                                headers.setBearerAuth(token);
+                                headers.set(HttpHeaders.AUTHORIZATION, "Bearer " + token);
                             }))
                             .build();
-
-                    return chain.filter(mutatedExchange);
-                });
+                })
+                .defaultIfEmpty(exchange)
+                .flatMap(chain::filter);
     }
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE - 10;
+        return Ordered.LOWEST_PRECEDENCE;
     }
 }
