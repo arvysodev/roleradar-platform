@@ -43,6 +43,9 @@ security:
     access-token-ttl-seconds: 900
     refresh-token-ttl-seconds: 2592000
     private-key-location: ${JWT_PRIVATE_KEY_LOCATION:classpath:keys/jwt-private.pem}
+    cookies:
+      secure: false # true in prod
+      same-site: Lax # Strict in prod
 
 roleradar:
   kafka:

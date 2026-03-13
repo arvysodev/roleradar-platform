@@ -24,9 +24,7 @@ public class ForwardBearerTokenGatewayFilter implements GlobalFilter, Ordered {
                 .flatMap(token -> {
                     ServerWebExchange mutatedExchange = exchange.mutate()
                             .request(request -> request.headers(headers -> {
-                                if (headers.getFirst(HttpHeaders.AUTHORIZATION) == null) {
-                                    headers.setBearerAuth(token);
-                                }
+                                headers.setBearerAuth(token);
                             }))
                             .build();
 
@@ -36,6 +34,6 @@ public class ForwardBearerTokenGatewayFilter implements GlobalFilter, Ordered {
 
     @Override
     public int getOrder() {
-        return Ordered.LOWEST_PRECEDENCE;
+        return Ordered.LOWEST_PRECEDENCE - 10;
     }
 }

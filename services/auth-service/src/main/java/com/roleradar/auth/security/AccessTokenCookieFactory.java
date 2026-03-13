@@ -8,11 +8,17 @@ public class AccessTokenCookieFactory {
 
     public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
 
+    private final CookieProperties cookieProperties;
+
+    public AccessTokenCookieFactory(CookieProperties cookieProperties) {
+        this.cookieProperties = cookieProperties;
+    }
+
     public ResponseCookie createAccessTokenCookie(String accessToken, long maxAgeSeconds) {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
                 .httpOnly(true)
-                .secure(false)
-                .sameSite("Lax")
+                .secure(cookieProperties.isSecure())
+                .sameSite(cookieProperties.getSameSite())
                 .path("/")
                 .maxAge(maxAgeSeconds)
                 .build();
@@ -21,8 +27,8 @@ public class AccessTokenCookieFactory {
     public ResponseCookie createDeleteAccessTokenCookie() {
         return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, "")
                 .httpOnly(true)
-                .secure(false)
-                .sameSite("Lax")
+                .secure(cookieProperties.isSecure())
+                .sameSite(cookieProperties.getSameSite())
                 .path("/")
                 .maxAge(0)
                 .build();
