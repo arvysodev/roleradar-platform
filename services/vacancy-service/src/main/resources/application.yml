@@ -3,19 +3,19 @@ spring:
     name: vacancy-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5432/roleradar_vacancy
-    username: postgres
-    password: postgres
+    url: jdbc:postgresql://localhost:5434/vacancy_db
+    username: vacancy_user
+    password: vacancy_password
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: validate
+    show-sql: true
     open-in-view: false
     properties:
       hibernate:
         format_sql: true
-    show-sql: false
 
   flyway:
     enabled: true
