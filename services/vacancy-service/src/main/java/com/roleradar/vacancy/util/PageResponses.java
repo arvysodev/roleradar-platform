@@ -1,0 +1,31 @@
+package com.roleradar.vacancy.util;
+
+import com.roleradar.vacancy.dto.PageResponse;
+import org.springframework.data.domain.Page;
+
+import java.util.List;
+import java.util.function.Function;
+
+public final class PageResponses {
+
+    private PageResponses() {
+    }
+
+    public static <E, D> PageResponse<D> of(Page<E> page, Function<E, D> mapper) {
+        List<D> items = page.getContent()
+                .stream()
+                .map(mapper)
+                .toList();
+
+        PageResponse.PageMeta meta = new PageResponse.PageMeta(
+                page.getNumber(),
+                page.getSize(),
+                page.getTotalElements(),
+                page.getTotalPages(),
+                page.hasNext(),
+                page.hasPrevious()
+        );
+
+        return new PageResponse<>(items, meta);
+    }
+}
