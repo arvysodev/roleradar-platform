@@ -12,7 +12,7 @@ public class IngestionEventPublisher {
 
     public IngestionEventPublisher(
             KafkaTemplate<String, Object> kafkaTemplate,
-            @Value("ingestion.vacancy-upserted") String vacancyUpsertedTopic
+            @Value("${roleradar.ingestion.topics.vacancy-upserted}") String vacancyUpsertedTopic
             ) {
         this.kafkaTemplate = kafkaTemplate;
         this.vacancyUpsertedTopic = vacancyUpsertedTopic;

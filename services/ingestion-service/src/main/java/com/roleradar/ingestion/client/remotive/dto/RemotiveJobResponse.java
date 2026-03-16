@@ -1,4 +1,4 @@
-package com.roleradar.ingestion.dto;
+package com.roleradar.ingestion.client.remotive.dto;
 
 public record RemotiveJobResponse(
         Long id,

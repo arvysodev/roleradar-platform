@@ -1,6 +1,6 @@
 package com.roleradar.ingestion.mapper;
 
-import com.roleradar.ingestion.dto.RemotiveJobResponse;
+import com.roleradar.ingestion.client.remotive.dto.RemotiveJobResponse;
 import com.roleradar.ingestion.event.VacancyUpsertedEvent;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;

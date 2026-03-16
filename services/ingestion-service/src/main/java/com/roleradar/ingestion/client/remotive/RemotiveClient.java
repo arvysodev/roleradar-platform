@@ -1,6 +1,6 @@
 package com.roleradar.ingestion.client.remotive;
 
-import com.roleradar.ingestion.dto.RemotiveJobsResponse;
+import com.roleradar.ingestion.client.remotive.dto.RemotiveJobsResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 

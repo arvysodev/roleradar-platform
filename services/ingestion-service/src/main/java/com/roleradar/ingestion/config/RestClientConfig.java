@@ -10,7 +10,7 @@ public class RestClientConfig {
 
     @Bean
     public RestClient remotiveRestClient(
-            @Value("${roleradal.ingestion.remotive.base-url}") String baseUrl
+            @Value("${roleradar.ingestion.remotive.base-url}") String baseUrl
     ) {
         return RestClient.builder()
                 .baseUrl(baseUrl)
