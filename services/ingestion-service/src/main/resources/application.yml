@@ -2,9 +2,15 @@ spring:
   application:
     name: ingestion-service
   autoconfigure:
-    exclude:
-      - org.springframework.boot.jdbc.autoconfigure.DataSourceAutoConfiguration
-      - org.springframework.boot.hibernate.autoconfigure.HibernateJpaAutoConfiguration
+    kafka:
+      bootstrap-servers: localhost:9092
 
 server:
   port: 8083
+
+roleradar:
+  ingestion:
+    remotive:
+      base-url: https://remotive.com
+    topics:
+      vacancy-upserted: vacancy-upserted
