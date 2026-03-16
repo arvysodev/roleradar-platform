@@ -21,6 +21,18 @@ spring:
     enabled: true
     locations: classpath:db/migration
 
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: vacancy-service
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: com.roleradar.vacancy.event
+        spring.json.value.default.type: com.roleradar.vacancy.event.VacancyUpsertedEvent
+        spring.json.use.type.headers: false
+
 server:
   port: 8082
 
@@ -33,3 +45,8 @@ security:
 springdoc:
   swagger-ui:
     path: /swagger-ui.html
+
+roleradar:
+  kafka:
+    topics:
+      vacancy-upserted: vacancy-upserted

@@ -24,6 +24,11 @@ public interface RemotiveVacancyMapper {
         if (publicationDate == null || publicationDate.isBlank()) {
             return null;
         }
-        return OffsetDateTime.parse(publicationDate).toLocalDateTime();
+
+        try {
+            return LocalDateTime.parse(publicationDate);
+        } catch (Exception ignored) {
+            return OffsetDateTime.parse(publicationDate).toLocalDateTime();
+        }
     }
 }

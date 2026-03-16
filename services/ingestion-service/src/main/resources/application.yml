@@ -16,5 +16,6 @@ roleradar:
   ingestion:
     remotive:
       base-url: https://remotive.com
+      max-jobs-per-run: 10 # temporary var for testing only
     topics:
       vacancy-upserted: vacancy-upserted
