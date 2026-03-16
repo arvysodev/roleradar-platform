@@ -2,34 +2,28 @@ package com.roleradar.ingestion.mapper;
 
 import com.roleradar.ingestion.dto.RemotiveJobResponse;
 import com.roleradar.ingestion.event.VacancyUpsertedEvent;
-import org.springframework.stereotype.Component;
+import org.mapstruct.Mapper;
+import org.mapstruct.Mapping;
 
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-@Component
-public class RemotiveVacancyMapper {
+@Mapper(componentModel = "spring", imports = LocalDateTime.class)
+public interface RemotiveVacancyMapper {
 
-    public VacancyUpsertedEvent toEvent(RemotiveJobResponse job) {
-        return new VacancyUpsertedEvent(
-                "REMOTIVE",
-                String.valueOf(job.id()),
-                job.title(),
-                job.company_name(),
-                job.candidate_required_location(),
-                true,
-                job.url(),
-                job.description(),
-                parsePostedAt(job.publication_date()),
-                LocalDateTime.now()
-        );
-    }
+    @Mapping(target = "source", constant = "REMOTIVE")
+    @Mapping(target = "externalId", expression = "java(String.valueOf(job.id()))")
+    @Mapping(target = "companyName", source = "company_name")
+    @Mapping(target = "location", source = "candidate_required_location")
+    @Mapping(target = "remote", constant = "true")
+    @Mapping(target = "postedAt", expression = "java(parsePostedAt(job.publication_date()))")
+    @Mapping(target = "ingestedAt", expression = "java(LocalDateTime.now())")
+    VacancyUpsertedEvent toEvent(RemotiveJobResponse job);
 
-    private LocalDateTime parsePostedAt(String publicationDate) {
+    default LocalDateTime parsePostedAt(String publicationDate) {
         if (publicationDate == null || publicationDate.isBlank()) {
             return null;
         }
-
         return OffsetDateTime.parse(publicationDate).toLocalDateTime();
     }
 }
