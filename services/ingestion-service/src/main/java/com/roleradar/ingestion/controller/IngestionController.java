@@ -1,5 +1,6 @@
 package com.roleradar.ingestion.controller;
 
+import com.roleradar.ingestion.dto.IngestionRunResult;
 import com.roleradar.ingestion.service.IngestionService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -17,8 +18,8 @@ public class IngestionController {
     }
 
     @PostMapping("/remotive")
-    public ResponseEntity<Void> ingestRemotiveVacancies() {
-        ingestionService.ingestRemotiveVacancies();
-        return ResponseEntity.accepted().build();
+    public ResponseEntity<IngestionRunResult> ingestRemotiveVacancies() {
+        IngestionRunResult result = ingestionService.ingestRemotiveVacancies();
+        return ResponseEntity.accepted().body(result);
     }
 }

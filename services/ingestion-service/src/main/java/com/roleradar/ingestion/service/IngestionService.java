@@ -3,6 +3,7 @@ package com.roleradar.ingestion.service;
 import com.roleradar.ingestion.client.remotive.RemotiveClient;
 import com.roleradar.ingestion.client.remotive.dto.RemotiveJobResponse;
 import com.roleradar.ingestion.client.remotive.dto.RemotiveJobsResponse;
+import com.roleradar.ingestion.dto.IngestionRunResult;
 import com.roleradar.ingestion.event.IngestionEventPublisher;
 import com.roleradar.ingestion.mapper.RemotiveVacancyMapper;
 import org.springframework.beans.factory.annotation.Value;
@@ -26,16 +27,22 @@ public class IngestionService {
         this.maxJobsPerRun = maxJobsPerRun;
     }
 
-    public void ingestRemotiveVacancies() {
+    public IngestionRunResult ingestRemotiveVacancies() {
         RemotiveJobsResponse response = remotiveClient.getRemoteJobs();
 
         if (response == null || response.jobs() == null || response.jobs().isEmpty()) {
-            return;
+            return new IngestionRunResult("REMOTIVE", 0, 0);
         }
 
-        response.jobs().stream()
+        int fetched = response.jobs().size();
+
+        var events = response.jobs().stream()
                 .limit(maxJobsPerRun)
                 .map(remotiveVacancyMapper::toEvent)
-                .forEach(ingestionEventPublisher::publishVacancyUpserted);
+                .toList();
+
+        events.forEach(ingestionEventPublisher::publishVacancyUpserted);
+
+        return new IngestionRunResult("REMOTIVE", fetched, events.size());
     }
 }
