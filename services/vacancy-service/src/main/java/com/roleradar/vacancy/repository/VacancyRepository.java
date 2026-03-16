@@ -11,6 +11,4 @@ import java.util.UUID;
 public interface VacancyRepository extends JpaRepository<Vacancy, UUID>, JpaSpecificationExecutor<Vacancy> {
 
     Optional<Vacancy> findBySourceAndExternalId(VacancySource source, String externalId);
-
-    boolean existsBySourceAndExternalId(VacancySource source, String externalId);
 }
