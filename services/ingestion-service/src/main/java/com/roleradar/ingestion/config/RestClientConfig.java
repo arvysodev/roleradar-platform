@@ -16,4 +16,13 @@ public class RestClientConfig {
                 .baseUrl(baseUrl)
                 .build();
     }
+
+    @Bean
+    public RestClient arbeitnowRestClient(
+            @Value("${roleradar.ingestion.arbeitnow.base-url}") String baseUrl
+    ) {
+        return RestClient.builder()
+                .baseUrl(baseUrl)
+                .build();
+    }
 }

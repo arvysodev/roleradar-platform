@@ -1,10 +1,14 @@
 package com.roleradar.ingestion.service;
 
+import com.roleradar.ingestion.client.arbeitnow.ArbeitnowClient;
+import com.roleradar.ingestion.client.arbeitnow.dto.ArbeitnowJobResponse;
+import com.roleradar.ingestion.client.arbeitnow.dto.ArbeitnowJobsResponse;
 import com.roleradar.ingestion.client.remotive.RemotiveClient;
 import com.roleradar.ingestion.client.remotive.dto.RemotiveJobResponse;
 import com.roleradar.ingestion.client.remotive.dto.RemotiveJobsResponse;
 import com.roleradar.ingestion.dto.IngestionRunResult;
 import com.roleradar.ingestion.event.IngestionEventPublisher;
+import com.roleradar.ingestion.mapper.ArbeitnowVacancyMapper;
 import com.roleradar.ingestion.mapper.RemotiveVacancyMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -15,16 +19,28 @@ public class IngestionService {
     private final RemotiveClient remotiveClient;
     private final RemotiveVacancyMapper remotiveVacancyMapper;
     private final IngestionEventPublisher ingestionEventPublisher;
-    private final int maxJobsPerRun;
+    private final ArbeitnowClient arbeitnowClient;
+    private final ArbeitnowVacancyMapper arbeitnowVacancyMapper;
+    private final int maxJobsPerRunRemotive;
+    private final int maxJobsPerRunArbeitnow;
+    private final int maxPagesPerRunArbeitnow;
 
     public IngestionService(RemotiveClient remotiveClient,
                             RemotiveVacancyMapper remotiveVacancyMapper,
                             IngestionEventPublisher ingestionEventPublisher,
-                            @Value("${roleradar.ingestion.remotive.max-jobs-per-run}") int maxJobsPerRun) {
+                            ArbeitnowClient arbeitnowClient,
+                            ArbeitnowVacancyMapper arbeitnowVacancyMapper,
+                            @Value("${roleradar.ingestion.remotive.max-jobs-per-run}") int maxJobsPerRunRemotive,
+                            @Value("${roleradar.ingestion.arbeitnow.max-jobs-per-run}") int maxJobsPerRunArbeitnow,
+                            @Value("${roleradar.ingestion.arbeitnow.max-pages-per-run}") int maxPagesPerRunArbeitnow) {
         this.remotiveClient = remotiveClient;
         this.remotiveVacancyMapper = remotiveVacancyMapper;
         this.ingestionEventPublisher = ingestionEventPublisher;
-        this.maxJobsPerRun = maxJobsPerRun;
+        this.arbeitnowClient = arbeitnowClient;
+        this.arbeitnowVacancyMapper = arbeitnowVacancyMapper;
+        this.maxJobsPerRunRemotive = maxJobsPerRunRemotive;
+        this.maxJobsPerRunArbeitnow = maxJobsPerRunArbeitnow;
+        this.maxPagesPerRunArbeitnow = maxPagesPerRunArbeitnow;
     }
 
     public IngestionRunResult ingestRemotiveVacancies() {
@@ -37,12 +53,52 @@ public class IngestionService {
         int fetched = response.jobs().size();
 
         var events = response.jobs().stream()
-                .limit(maxJobsPerRun)
+                .limit(maxJobsPerRunRemotive)
                 .map(remotiveVacancyMapper::toEvent)
                 .toList();
 
         events.forEach(ingestionEventPublisher::publishVacancyUpserted);
 
         return new IngestionRunResult("REMOTIVE", fetched, events.size());
+    }
+
+    public IngestionRunResult ingestArbeitnowVacancies() {
+        int page = 0;
+        int pagesFetched = 0;
+        int fetched = 0;
+        int published = 0;
+
+        while (pagesFetched < maxPagesPerRunArbeitnow && published < maxJobsPerRunArbeitnow) {
+            ArbeitnowJobsResponse response = arbeitnowClient.getRemoteJobs(page);
+
+            if (response == null || response.data() == null || response.data().isEmpty()) {
+                break;
+            }
+
+            fetched += response.data().size();
+
+            for (ArbeitnowJobResponse job : response.data()) {
+                if (published >= maxJobsPerRunArbeitnow) {
+                    break;
+                }
+
+                ingestionEventPublisher.publishVacancyUpserted(
+                        arbeitnowVacancyMapper.toEvent(job)
+                );
+                published++;
+            }
+
+            pagesFetched++;
+
+            if (response.links() == null
+                    || response.links().next() == null
+                    || response.links().next().isBlank()) {
+                break;
+            }
+
+            page++;
+        }
+
+        return new IngestionRunResult("ARBEITNOW", fetched, published);
     }
 }

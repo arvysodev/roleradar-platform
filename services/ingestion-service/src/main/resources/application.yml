@@ -17,5 +17,9 @@ roleradar:
     remotive:
       base-url: https://remotive.com
       max-jobs-per-run: 10 # temporary var for testing only
+    arbeitnow:
+      base-url: https://www.arbeitnow.com
+      max-jobs-per-run: 50 # temporary var for testing only
+      max-pages-per-run: 3
     topics:
       vacancy-upserted: vacancy-upserted

@@ -22,4 +22,10 @@ public class IngestionController {
         IngestionRunResult result = ingestionService.ingestRemotiveVacancies();
         return ResponseEntity.accepted().body(result);
     }
+
+    @PostMapping("/arbeitnow")
+    public ResponseEntity<IngestionRunResult> ingestArbeitnowVacancies() {
+        IngestionRunResult result = ingestionService.ingestArbeitnowVacancies();
+        return ResponseEntity.accepted().body(result);
+    }
 }
