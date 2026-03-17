@@ -4,14 +4,16 @@ import com.roleradar.ingestion.client.arbeitnow.ArbeitnowClient;
 import com.roleradar.ingestion.client.arbeitnow.dto.ArbeitnowJobResponse;
 import com.roleradar.ingestion.client.arbeitnow.dto.ArbeitnowJobsResponse;
 import com.roleradar.ingestion.client.remotive.RemotiveClient;
-import com.roleradar.ingestion.client.remotive.dto.RemotiveJobResponse;
 import com.roleradar.ingestion.client.remotive.dto.RemotiveJobsResponse;
 import com.roleradar.ingestion.dto.IngestionRunResult;
 import com.roleradar.ingestion.event.IngestionEventPublisher;
+import com.roleradar.ingestion.event.VacancyUpsertedEvent;
 import com.roleradar.ingestion.mapper.ArbeitnowVacancyMapper;
 import com.roleradar.ingestion.mapper.RemotiveVacancyMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+
+import java.util.UUID;
 
 @Service
 public class IngestionService {
@@ -55,6 +57,7 @@ public class IngestionService {
         var events = response.jobs().stream()
                 .limit(maxJobsPerRunRemotive)
                 .map(remotiveVacancyMapper::toEvent)
+                .map(this::withEventId)
                 .toList();
 
         events.forEach(ingestionEventPublisher::publishVacancyUpserted);
@@ -82,9 +85,11 @@ public class IngestionService {
                     break;
                 }
 
-                ingestionEventPublisher.publishVacancyUpserted(
+                VacancyUpsertedEvent event = withEventId(
                         arbeitnowVacancyMapper.toEvent(job)
                 );
+
+                ingestionEventPublisher.publishVacancyUpserted(event);
                 published++;
             }
 
@@ -100,5 +105,22 @@ public class IngestionService {
         }
 
         return new IngestionRunResult("ARBEITNOW", fetched, published);
+    }
+
+    private VacancyUpsertedEvent withEventId(VacancyUpsertedEvent event) {
+        return new VacancyUpsertedEvent(
+                UUID.randomUUID(),
+                event.source(),
+                event.externalId(),
+                event.title(),
+                event.companyName(),
+                event.location(),
+                event.remote(),
+                event.url(),
+                event.descriptionHtml(),
+                event.descriptionText(),
+                event.postedAt(),
+                event.ingestedAt()
+        );
     }
 }

@@ -12,6 +12,7 @@ import java.time.ZoneOffset;
 @Mapper(componentModel = "spring", uses = HtmlDescriptionMapperSupport.class, imports = LocalDateTime.class)
 public interface ArbeitnowVacancyMapper {
 
+    @Mapping(target = "eventId", expression = "java(null)")
     @Mapping(target = "source", constant = "ARBEITNOW")
     @Mapping(target = "externalId", source = "slug")
     @Mapping(target = "companyName", source = "company_name")

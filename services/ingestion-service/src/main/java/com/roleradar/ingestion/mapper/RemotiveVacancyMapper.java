@@ -11,6 +11,7 @@ import java.time.OffsetDateTime;
 @Mapper(componentModel = "spring", uses = HtmlDescriptionMapperSupport.class, imports = LocalDateTime.class)
 public interface RemotiveVacancyMapper {
 
+    @Mapping(target = "eventId", expression = "java(null)")
     @Mapping(target = "source", constant = "REMOTIVE")
     @Mapping(target = "externalId", expression = "java(String.valueOf(job.id()))")
     @Mapping(target = "companyName", source = "company_name")

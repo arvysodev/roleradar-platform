@@ -1,8 +1,10 @@
 package com.roleradar.ingestion.event;
 
 import java.time.LocalDateTime;
+import java.util.UUID;
 
 public record VacancyUpsertedEvent(
+        UUID eventId,
         String source,
         String externalId,
         String title,
