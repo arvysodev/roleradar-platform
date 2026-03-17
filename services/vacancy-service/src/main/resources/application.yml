@@ -60,3 +60,7 @@ roleradar:
       retry:
         max-attempts: 3
         backoff-interval-ms: 1000
+  cleanup:
+    processed-events:
+      cron: "0 0 * * * *"
+      retention-days: 30

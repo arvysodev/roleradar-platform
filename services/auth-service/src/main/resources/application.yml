@@ -51,6 +51,11 @@ roleradar:
   kafka:
     topics:
       email-verification-requested: auth.email-verification-requested
+  cleanup:
+    refresh-tokens:
+      cron: "0 15 * * * *"
+      expired-retention-days: 0
+      revoked-retention-days: 7
 
 server:
   port: 8081
