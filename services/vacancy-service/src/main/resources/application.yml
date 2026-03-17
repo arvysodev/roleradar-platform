@@ -32,6 +32,11 @@ spring:
         spring.json.trusted.packages: com.roleradar.vacancy.event
         spring.json.value.default.type: com.roleradar.vacancy.event.VacancyUpsertedEvent
         spring.json.use.type.headers: false
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
+      properties:
+        spring.json.add.type.headers: false
 
 server:
   port: 8082
@@ -50,3 +55,8 @@ roleradar:
   kafka:
     topics:
       vacancy-upserted: vacancy-upserted
+      vacancy-upserted-dlt: vacancy-upserted-dlt
+    consumer:
+      retry:
+        max-attempts: 3
+        backoff-interval-ms: 1000

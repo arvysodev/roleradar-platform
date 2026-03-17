@@ -1,7 +1,6 @@
 package com.roleradar.vacancy.event;
 
 import com.roleradar.vacancy.service.VacancyEventProcessingService;
-import com.roleradar.vacancy.service.VacancyIngestionService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.kafka.annotation.KafkaListener;
@@ -20,7 +19,8 @@ public class VacancyEventConsumer {
 
     @KafkaListener(
             topics = "${roleradar.kafka.topics.vacancy-upserted}",
-            groupId = "${spring.kafka.consumer.group-id}"
+            groupId = "${spring.kafka.consumer.group-id}",
+            containerFactory = "vacancyKafkaListenerContainerFactory"
     )
     public void consumeVacancyUpserted(VacancyUpsertedEvent event) {
         log.info(
