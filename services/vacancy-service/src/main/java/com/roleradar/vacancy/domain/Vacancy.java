@@ -26,7 +26,8 @@ public class Vacancy {
                    String location,
                    boolean remote,
                    String url,
-                   String description,
+                   String descriptionHtml,
+                   String descriptionText,
                    LocalDateTime postedAt,
                    LocalDateTime ingestedAt) {
         this.source = source;
@@ -36,7 +37,8 @@ public class Vacancy {
         this.location = location;
         this.remote = remote;
         this.url = url;
-        this.description = description;
+        this.descriptionHtml = descriptionHtml;
+        this.descriptionText = descriptionText;
         this.postedAt = postedAt;
         this.ingestedAt = ingestedAt;
         this.status = VacancyStatus.ACTIVE;
@@ -69,8 +71,11 @@ public class Vacancy {
     @Column(nullable = false, length = 1000)
     private String url;
 
-    @Column(nullable = false)
-    private String description;
+    @Column(name = "description_html", nullable = false)
+    private String descriptionHtml;
+
+    @Column(name = "description_text", nullable = false)
+    private String descriptionText;
 
     @Column(name = "posted_at")
     private LocalDateTime postedAt;
@@ -101,7 +106,8 @@ public class Vacancy {
                                   String location,
                                   boolean remote,
                                   String url,
-                                  String description,
+                                  String descriptionHtml,
+                                  String descriptionText,
                                   LocalDateTime postedAt,
                                   LocalDateTime ingestedAt) {
         this.title = title;
@@ -109,7 +115,8 @@ public class Vacancy {
         this.location = location;
         this.remote = remote;
         this.url = url;
-        this.description = description;
+        this.descriptionHtml = descriptionHtml;
+        this.descriptionText = descriptionText;
         this.postedAt = postedAt;
         this.ingestedAt = ingestedAt;
         this.status = VacancyStatus.ACTIVE;

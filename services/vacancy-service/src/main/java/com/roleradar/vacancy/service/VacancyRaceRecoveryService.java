@@ -34,7 +34,8 @@ public class VacancyRaceRecoveryService {
                 event.location(),
                 event.remote(),
                 event.url(),
-                event.description(),
+                event.descriptionHtml(),
+                event.descriptionText(),
                 event.postedAt(),
                 event.ingestedAt()
         );

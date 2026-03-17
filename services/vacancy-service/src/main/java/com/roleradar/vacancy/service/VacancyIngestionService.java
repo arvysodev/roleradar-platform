@@ -38,7 +38,8 @@ public class VacancyIngestionService {
                                         event.location(),
                                         event.remote(),
                                         event.url(),
-                                        event.description(),
+                                        event.descriptionHtml(),
+                                        event.descriptionText(),
                                         event.postedAt(),
                                         event.ingestedAt()
                                 );
@@ -60,7 +61,8 @@ public class VacancyIngestionService {
                                         event.location(),
                                         event.remote(),
                                         event.url(),
-                                        event.description(),
+                                        event.descriptionHtml(),
+                                        event.descriptionText(),
                                         event.postedAt(),
                                         event.ingestedAt()
                                 );

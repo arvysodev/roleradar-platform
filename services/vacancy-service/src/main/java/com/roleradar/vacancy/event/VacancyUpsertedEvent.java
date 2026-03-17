@@ -10,7 +10,8 @@ public record VacancyUpsertedEvent(
         String location,
         boolean remote,
         String url,
-        String description,
+        String descriptionHtml,
+        String descriptionText,
         LocalDateTime postedAt,
         LocalDateTime ingestedAt
 ) {

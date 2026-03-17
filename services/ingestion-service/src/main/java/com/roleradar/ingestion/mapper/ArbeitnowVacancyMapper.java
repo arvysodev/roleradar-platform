@@ -9,7 +9,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 
-@Mapper(componentModel = "spring", imports = LocalDateTime.class)
+@Mapper(componentModel = "spring", uses = HtmlDescriptionMapperSupport.class, imports = LocalDateTime.class)
 public interface ArbeitnowVacancyMapper {
 
     @Mapping(target = "source", constant = "ARBEITNOW")
@@ -18,7 +18,8 @@ public interface ArbeitnowVacancyMapper {
     @Mapping(target = "location", source = "location")
     @Mapping(target = "remote", source = "remote")
     @Mapping(target = "url", source = "url")
-    @Mapping(target = "description", source = "description")
+    @Mapping(target = "descriptionHtml", source = "description")
+    @Mapping(target = "descriptionText", source = "description", qualifiedByName = "htmlToPlainText")
     @Mapping(target = "postedAt", expression = "java(parseCreatedAt(job.created_at()))")
     @Mapping(target = "ingestedAt", expression = "java(LocalDateTime.now())")
     VacancyUpsertedEvent toEvent(ArbeitnowJobResponse job);
