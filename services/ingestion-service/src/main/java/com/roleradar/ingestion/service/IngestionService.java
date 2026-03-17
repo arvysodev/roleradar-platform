@@ -63,7 +63,7 @@ public class IngestionService {
     }
 
     public IngestionRunResult ingestArbeitnowVacancies() {
-        int page = 2;
+        int page = 0;
         int pagesFetched = 0;
         int fetched = 0;
         int published = 0;
