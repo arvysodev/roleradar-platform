@@ -64,3 +64,10 @@ roleradar:
     processed-events:
       cron: "0 0 * * * *"
       retention-days: 30
+
+  vacancy:
+    lifecycle:
+      stale-close-cron: "0 0 * * * *"
+      stale-close-threshold-hours: 48
+      closed-cleanup-cron: "0 30 0 * * *"
+      closed-retention-days: 30

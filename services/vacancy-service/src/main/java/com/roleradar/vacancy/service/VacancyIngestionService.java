@@ -41,6 +41,7 @@ public class VacancyIngestionService {
                                         event.descriptionHtml(),
                                         event.descriptionText(),
                                         event.postedAt(),
+                                        event.ingestedAt(),
                                         event.ingestedAt()
                                 );
 
@@ -64,6 +65,7 @@ public class VacancyIngestionService {
                                         event.descriptionHtml(),
                                         event.descriptionText(),
                                         event.postedAt(),
+                                        event.ingestedAt(),
                                         event.ingestedAt()
                                 );
 

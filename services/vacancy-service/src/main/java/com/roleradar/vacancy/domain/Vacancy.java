@@ -29,7 +29,8 @@ public class Vacancy {
                    String descriptionHtml,
                    String descriptionText,
                    LocalDateTime postedAt,
-                   LocalDateTime ingestedAt) {
+                   LocalDateTime ingestedAt,
+                   LocalDateTime lastSeenAt) {
         this.source = source;
         this.externalId = externalId;
         this.title = title;
@@ -41,6 +42,7 @@ public class Vacancy {
         this.descriptionText = descriptionText;
         this.postedAt = postedAt;
         this.ingestedAt = ingestedAt;
+        this.lastSeenAt = lastSeenAt;
         this.status = VacancyStatus.ACTIVE;
     }
 
@@ -93,12 +95,24 @@ public class Vacancy {
     @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 
-    public void markClosed() {
+    @Column(name = "last_seen_at", nullable = false)
+    private LocalDateTime lastSeenAt;
+
+    @Column(name = "closed_at")
+    private LocalDateTime closedAt;
+
+    public void markClosed(LocalDateTime closedAt) {
+        if (this.status == VacancyStatus.CLOSED) {
+            return;
+        }
+
         this.status = VacancyStatus.CLOSED;
+        this.closedAt = closedAt;
     }
 
     public void markActive() {
         this.status = VacancyStatus.ACTIVE;
+        this.closedAt = null;
     }
 
     public void refreshFromSource(String title,
@@ -109,7 +123,8 @@ public class Vacancy {
                                   String descriptionHtml,
                                   String descriptionText,
                                   LocalDateTime postedAt,
-                                  LocalDateTime ingestedAt) {
+                                  LocalDateTime ingestedAt,
+                                  LocalDateTime lastSeenAt) {
         this.title = title;
         this.companyName = companyName;
         this.location = location;
@@ -120,6 +135,8 @@ public class Vacancy {
         this.postedAt = postedAt;
         this.ingestedAt = ingestedAt;
         this.status = VacancyStatus.ACTIVE;
+        this.lastSeenAt = lastSeenAt;
+        this.closedAt = null;
     }
 
     @PrePersist
@@ -129,6 +146,7 @@ public class Vacancy {
         if (updatedAt == null) updatedAt = now;
         if (ingestedAt == null) ingestedAt = now;
         if (status == null) status = VacancyStatus.ACTIVE;
+        if (lastSeenAt == null) lastSeenAt = now;
     }
 
     @PreUpdate

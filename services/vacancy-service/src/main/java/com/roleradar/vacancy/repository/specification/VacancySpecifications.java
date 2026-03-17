@@ -27,10 +27,8 @@ public final class VacancySpecifications {
     }
 
     public static Specification<Vacancy> hasStatus(VacancyStatus status) {
-        if (status == null) {
-            return null;
-        }
-        return (root, query, cb) -> cb.equal(root.get("status"), status);
+        VacancyStatus effectiveStatus = status != null ? status : VacancyStatus.ACTIVE;
+        return (root, query, cb) -> cb.equal(root.get("status"), effectiveStatus);
     }
 
     public static Specification<Vacancy> hasRemote(Boolean remote) {

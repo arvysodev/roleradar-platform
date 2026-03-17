@@ -37,6 +37,7 @@ public class VacancyRaceRecoveryService {
                 event.descriptionHtml(),
                 event.descriptionText(),
                 event.postedAt(),
+                event.ingestedAt(),
                 event.ingestedAt()
         );
 

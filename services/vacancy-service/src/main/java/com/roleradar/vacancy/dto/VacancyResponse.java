@@ -18,6 +18,8 @@ public record VacancyResponse(
         LocalDateTime ingestedAt,
         LocalDateTime createdAt,
         LocalDateTime updatedAt,
-        String status
+        String status,
+        LocalDateTime lastSeenAt,
+        LocalDateTime closedAt
 ) {
 }
