@@ -13,7 +13,6 @@ public class CsrfController {
 
     @GetMapping("/csrf")
     public Mono<Map<String, String>> csrf(ServerWebExchange exchange) {
-        @SuppressWarnings("unchecked")
         Mono<CsrfToken> csrfTokenMono =
                 exchange.getAttribute(CsrfToken.class.getName());
 

@@ -17,7 +17,7 @@ public class RefreshTokenCookieFactory {
                 .httpOnly(true)
                 .secure(cookieProperties.isSecure())
                 .sameSite(cookieProperties.getSameSite())
-                .path("/api/v1/auth/refresh")
+                .path("/api/v1/auth")
                 .maxAge(maxAgeSeconds)
                 .build();
     }
@@ -27,7 +27,7 @@ public class RefreshTokenCookieFactory {
                 .httpOnly(true)
                 .secure(cookieProperties.isSecure())
                 .sameSite(cookieProperties.getSameSite())
-                .path("/api/v1/auth/refresh")
+                .path("/api/v1/auth")
                 .maxAge(0)
                 .build();
     }

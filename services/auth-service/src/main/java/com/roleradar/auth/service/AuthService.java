@@ -128,6 +128,7 @@ public class AuthService {
         return issueTokens(user);
     }
 
+    @Transactional
     public AuthTokens refresh(String rawRefreshToken) {
         String refreshTokenHash = tokenHasher.sha256Base64Url(rawRefreshToken);
 
@@ -150,6 +151,7 @@ public class AuthService {
         return issueTokens(user);
     }
 
+    @Transactional
     public void logout(String rawRefreshToken) {
         String refreshTokenHash = tokenHasher.sha256Base64Url(rawRefreshToken);
 
