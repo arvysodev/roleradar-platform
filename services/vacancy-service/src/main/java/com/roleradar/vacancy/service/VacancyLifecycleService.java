@@ -66,7 +66,7 @@ public class VacancyLifecycleService {
         LocalDateTime cutOff = LocalDateTime.now().minusDays(closedThresholdDays);
 
         long deleted = vacancyRepository.deleteByStatusAndClosedAtBefore(
-                VacancyStatus.ACTIVE,
+                VacancyStatus.CLOSED,
                 cutOff
         );
 
