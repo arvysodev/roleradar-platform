@@ -14,6 +14,12 @@ server:
 
 roleradar:
   ingestion:
+    scheduling:
+      enabled: true
+      remotive-cron: "0 0 */8 * * *"
+      arbeitnow-cron: "0 0 */2 * * *"
+      adzuna-cron: "0 0 */2 * * *"
+
     remotive:
       base-url: https://remotive.com
       max-jobs-per-run: 10 # temporary var for testing only
@@ -29,7 +35,7 @@ roleradar:
       app-key: ${ADZUNA_APP_KEY}
       countries: pl,de,nl,fr,es,it
       search-terms: java developer,backend developer,software engineer
-      max-jobs-per-run: 100
+      max-jobs-per-run: 100 # temporary var for testing only
       results-per-page: 50 # temporary var for testing only
       max-pages-per-run: 3 # temporary var for testing only
 
