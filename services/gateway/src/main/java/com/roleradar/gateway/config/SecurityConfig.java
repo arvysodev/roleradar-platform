@@ -1,9 +1,7 @@
 package com.roleradar.gateway.config;
 
-import com.roleradar.gateway.security.AccessTokenCookieServerAuthenticationConverter;
+import com.roleradar.gateway.security.*;
 import com.roleradar.gateway.security.JwtAudienceValidator;
-import com.roleradar.gateway.security.JwtAuthenticationConverter;
-import com.roleradar.gateway.security.JwtProperties;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,13 +17,13 @@ import org.springframework.security.web.server.csrf.ServerCsrfTokenRequestAttrib
 
 @Configuration
 @EnableReactiveMethodSecurity
-@EnableConfigurationProperties(JwtProperties.class)
+@EnableConfigurationProperties({JwtProperties.class, CookieProperties.class})
 public class SecurityConfig {
 
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
                                                      ReactiveJwtDecoder jwtDecoder,
-                                                     JwtProperties jwtProperties) {
+                                                     CookieProperties cookieProperties) {
         return http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
@@ -50,7 +48,7 @@ public class SecurityConfig {
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .bearerTokenConverter(
                                 new AccessTokenCookieServerAuthenticationConverter(
-                                        jwtProperties.accessTokenCookieName()
+                                        cookieProperties.getAccessTokenName()
                                 )
                         )
                         .jwt(jwt -> jwt

@@ -1,7 +1,6 @@
 package com.roleradar.gateway.security;
 
 import org.springframework.http.HttpCookie;
-import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.server.resource.web.server.authentication.ServerBearerTokenAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.BearerTokenAuthenticationToken;

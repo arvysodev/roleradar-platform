@@ -1,16 +1,9 @@
 package com.roleradar.auth.controller;
 
 import com.roleradar.auth.dto.*;
-import com.roleradar.auth.exception.UnauthorizedException;
-import com.roleradar.auth.security.AccessTokenCookieFactory;
-import com.roleradar.auth.security.RefreshTokenCookieFactory;
 import com.roleradar.auth.service.AuthService;
-import com.roleradar.auth.service.AuthTokens;
-import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import com.roleradar.auth.dto.AuthTokens;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,15 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
-    private final RefreshTokenCookieFactory refreshTokenCookieFactory;
-    private final AccessTokenCookieFactory accessTokenCookieFactory;
 
-    public AuthController(AuthService authService,
-                          RefreshTokenCookieFactory refreshTokenCookieFactory,
-                          AccessTokenCookieFactory accessTokenCookieFactory) {
+    public AuthController(AuthService authService) {
         this.authService = authService;
-        this.refreshTokenCookieFactory = refreshTokenCookieFactory;
-        this.accessTokenCookieFactory = accessTokenCookieFactory;
     }
 
     @PostMapping("/register")
@@ -46,85 +33,40 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AuthTokensResponse login(@Valid @RequestBody LoginRequest request,
-                                    HttpServletResponse response) {
+    public AuthTokensResponse login(@Valid @RequestBody LoginRequest request) {
         AuthTokens tokens = authService.login(request);
 
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                accessTokenCookieFactory
-                        .createAccessTokenCookie(tokens.accessToken(), tokens.accessTokenExpiresInSeconds())
-                        .toString()
+        return new AuthTokensResponse(
+                "Bearer",
+                tokens.accessToken(),
+                tokens.accessTokenExpiresInSeconds(),
+                tokens.refreshToken(),
+                tokens.refreshTokenExpiresInSeconds()
         );
-
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                refreshTokenCookieFactory
-                        .createRefreshTokenCookie(tokens.refreshToken(), authService.getRefreshTokenTtlSeconds())
-                        .toString()
-        );
-
-        return new AuthTokensResponse("Bearer", tokens.accessTokenExpiresInSeconds());
     }
 
     @PostMapping("/refresh")
-    public AuthTokensResponse refresh(HttpServletRequest request,
-                                      HttpServletResponse response) {
-        String refreshToken = extractRefreshTokenFromCookies(request);
+    public AuthTokensResponse refresh(@Valid @RequestBody RefreshRequest request) {
+        AuthTokens tokens = authService.refresh(request.refreshToken());
 
-        AuthTokens tokens = authService.refresh(refreshToken);
-
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                accessTokenCookieFactory
-                        .createAccessTokenCookie(tokens.accessToken(), tokens.accessTokenExpiresInSeconds())
-                        .toString()
+        return new AuthTokensResponse(
+                "Bearer",
+                tokens.accessToken(),
+                tokens.accessTokenExpiresInSeconds(),
+                tokens.refreshToken(),
+                tokens.refreshTokenExpiresInSeconds()
         );
-
-        response.addHeader(
-                HttpHeaders.SET_COOKIE,
-                refreshTokenCookieFactory
-                        .createRefreshTokenCookie(tokens.refreshToken(), authService.getRefreshTokenTtlSeconds())
-                        .toString()
-        );
-
-        return new AuthTokensResponse("Bearer", tokens.accessTokenExpiresInSeconds());
     }
 
     @PostMapping("/logout")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void logout(HttpServletRequest request,
-                       HttpServletResponse response) {
-        String refreshToken = extractRefreshTokenFromCookies(request);
-
-        authService.logout(refreshToken);
-
-        response.addHeader(HttpHeaders.SET_COOKIE,
-                accessTokenCookieFactory.createDeleteAccessTokenCookie().toString());
-
-        response.addHeader(HttpHeaders.SET_COOKIE,
-                refreshTokenCookieFactory.createDeleteRefreshTokenCookie().toString());
+    public void logout(@Valid @RequestBody LogoutRequest request) {
+        authService.logout(request.refreshToken());
     }
 
     @GetMapping("/me")
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     public MeResponse me(@AuthenticationPrincipal Jwt jwt) {
         return authService.getCurrentUser(jwt);
-    }
-
-    private String extractRefreshTokenFromCookies(HttpServletRequest request) {
-        Cookie[] cookies = request.getCookies();
-
-        if (cookies == null) {
-            throw new UnauthorizedException("Refresh token cookie is missing.");
-        }
-
-        for (Cookie cookie : cookies) {
-            if (RefreshTokenCookieFactory.REFRESH_TOKEN_COOKIE_NAME.equals(cookie.getName())) {
-                return cookie.getValue();
-            }
-        }
-
-        throw new UnauthorizedException("Refresh token cookie is missing.");
     }
 }

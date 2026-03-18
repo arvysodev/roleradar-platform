@@ -1,6 +1,6 @@
-package com.roleradar.auth.dto;
+package com.roleradar.gateway.dto;
 
-public record AuthTokensResponse(
+public record AuthTokensGatewayResponse(
         String tokenType,
         String accessToken,
         long accessTokenExpiresInSeconds,
