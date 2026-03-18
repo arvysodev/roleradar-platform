@@ -10,7 +10,11 @@ security:
     issuer: http://localhost:8081
     audience: roleradar-api
     jwk-set-uri: http://localhost:8081/.well-known/jwks.json
-    access-token-cookie-name: access_token
+  cookies:
+    access-token-name: access_token
+    refresh-token-name: refresh_token
+    secure: false # true in prod
+    same-site: Lax # Strict in prod
 
 springdoc:
   swagger-ui:

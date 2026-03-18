@@ -1,35 +1,33 @@
-package com.roleradar.auth.security;
+package com.roleradar.gateway.security;
 
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 @Component
-public class AccessTokenCookieFactory {
-
-    public static final String ACCESS_TOKEN_COOKIE_NAME = "access_token";
+public class RefreshTokenCookieFactory {
 
     private final CookieProperties cookieProperties;
 
-    public AccessTokenCookieFactory(CookieProperties cookieProperties) {
+    public RefreshTokenCookieFactory(CookieProperties cookieProperties) {
         this.cookieProperties = cookieProperties;
     }
 
-    public ResponseCookie createAccessTokenCookie(String accessToken, long maxAgeSeconds) {
-        return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, accessToken)
+    public ResponseCookie create(String token, long maxAgeSeconds) {
+        return ResponseCookie.from(cookieProperties.getRefreshTokenName(), token)
                 .httpOnly(true)
                 .secure(cookieProperties.isSecure())
                 .sameSite(cookieProperties.getSameSite())
-                .path("/")
+                .path("/api/v1/auth/refresh")
                 .maxAge(maxAgeSeconds)
                 .build();
     }
 
-    public ResponseCookie createDeleteAccessTokenCookie() {
-        return ResponseCookie.from(ACCESS_TOKEN_COOKIE_NAME, "")
+    public ResponseCookie clear() {
+        return ResponseCookie.from(cookieProperties.getRefreshTokenName(), "")
                 .httpOnly(true)
                 .secure(cookieProperties.isSecure())
                 .sameSite(cookieProperties.getSameSite())
-                .path("/")
+                .path("/api/v1/auth/refresh")
                 .maxAge(0)
                 .build();
     }

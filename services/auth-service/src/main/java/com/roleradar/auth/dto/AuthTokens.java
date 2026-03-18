@@ -1,7 +1,6 @@
 package com.roleradar.auth.dto;
 
-public record AuthTokensResponse(
-        String tokenType,
+public record AuthTokens(
         String accessToken,
         long accessTokenExpiresInSeconds,
         String refreshToken,

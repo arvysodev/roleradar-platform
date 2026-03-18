@@ -3,10 +3,7 @@ package com.roleradar.auth.service;
 import com.roleradar.auth.domain.RefreshToken;
 import com.roleradar.auth.domain.User;
 import com.roleradar.auth.domain.UserStatus;
-import com.roleradar.auth.dto.LoginRequest;
-import com.roleradar.auth.dto.MeResponse;
-import com.roleradar.auth.dto.RegisterRequest;
-import com.roleradar.auth.dto.UserResponse;
+import com.roleradar.auth.dto.*;
 import com.roleradar.auth.event.AuthEventPublisher;
 import com.roleradar.auth.event.EmailVerificationRequestedEvent;
 import com.roleradar.auth.exception.BadRequestException;
@@ -197,7 +194,8 @@ public class AuthService {
         return new AuthTokens(
                 accessToken,
                 jwtService.getAccessTokenTtlSeconds(),
-                rawRefreshToken
+                rawRefreshToken,
+                jwtService.getRefreshTokenTtlSeconds()
         );
     }
 

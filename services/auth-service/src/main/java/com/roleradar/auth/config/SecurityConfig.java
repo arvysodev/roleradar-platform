@@ -1,6 +1,5 @@
 package com.roleradar.auth.config;
 
-import com.roleradar.auth.security.CookieProperties;
 import com.roleradar.auth.security.JwtAudienceValidator;
 import com.roleradar.auth.security.JwtAuthenticationConverter;
 import com.roleradar.auth.security.JwtKeyPairProvider;
@@ -23,7 +22,7 @@ import java.security.interfaces.RSAPublicKey;
 
 @Configuration
 @EnableMethodSecurity
-@EnableConfigurationProperties({JwtProperties.class, CookieProperties.class})
+@EnableConfigurationProperties(JwtProperties.class)
 public class SecurityConfig {
 
     @Bean
