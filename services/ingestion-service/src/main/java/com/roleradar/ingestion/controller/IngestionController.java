@@ -28,4 +28,10 @@ public class IngestionController {
         IngestionRunResult result = ingestionService.ingestArbeitnowVacancies();
         return ResponseEntity.accepted().body(result);
     }
+
+    @PostMapping("/adzuna")
+    public ResponseEntity<IngestionRunResult> ingestAdzunaVacancies() {
+        IngestionRunResult result = ingestionService.ingestAdzunaVacancies();
+        return ResponseEntity.accepted().body(result);
+    }
 }

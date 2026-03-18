@@ -17,9 +17,21 @@ roleradar:
     remotive:
       base-url: https://remotive.com
       max-jobs-per-run: 10 # temporary var for testing only
+
     arbeitnow:
       base-url: https://www.arbeitnow.com
       max-jobs-per-run: 50 # temporary var for testing only
-      max-pages-per-run: 3
+      max-pages-per-run: 3 # temporary var for testing only
+
+    adzuna:
+      base-url: https://api.adzuna.com/v1/api
+      app-id: ${ADZUNA_APP_ID}
+      app-key: ${ADZUNA_APP_KEY}
+      countries: pl,de,nl,fr,es,it
+      search-terms: java developer,backend developer,software engineer
+      max-jobs-per-run: 100
+      results-per-page: 50 # temporary var for testing only
+      max-pages-per-run: 3 # temporary var for testing only
+
     topics:
       vacancy-upserted: vacancy-upserted
