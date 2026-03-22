@@ -3,34 +3,34 @@ spring:
     name: vacancy-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5434/vacancy_db
-    username: vacancy_user
-    password: vacancy_password
+    url: ${VACANCY_DB_URL:jdbc:postgresql://localhost:5434/vacancy_db}
+    username: ${VACANCY_DB_USERNAME:vacancy_user}
+    password: ${VACANCY_DB_PASSWORD:vacancy_password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
     hibernate:
       ddl-auto: validate
-    show-sql: true
+    show-sql: ${JPA_SHOW_SQL:true}
     open-in-view: false
     properties:
       hibernate:
-        format_sql: true
+        format_sql: ${HIBERNATE_FORMAT_SQL:true}
 
   flyway:
     enabled: true
     locations: classpath:db/migration
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${VACANCY_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      group-id: vacancy-service
-      auto-offset-reset: earliest
+      group-id: ${VACANCY_KAFKA_CONSUMER_GROUP_ID:vacancy-service}
+      auto-offset-reset: ${VACANCY_KAFKA_AUTO_OFFSET_RESET:earliest}
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
       properties:
-        spring.json.trusted.packages: com.roleradar.vacancy.event
-        spring.json.value.default.type: com.roleradar.vacancy.event.VacancyUpsertedEvent
+        spring.json.trusted.packages: ${VACANCY_KAFKA_TRUSTED_PACKAGES:com.roleradar.vacancy.event}
+        spring.json.value.default.type: ${VACANCY_KAFKA_DEFAULT_TYPE:com.roleradar.vacancy.event.VacancyUpsertedEvent}
         spring.json.use.type.headers: false
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
@@ -39,13 +39,13 @@ spring:
         spring.json.add.type.headers: false
 
 server:
-  port: 8082
+  port: ${VACANCY_SERVER_PORT:8082}
 
 security:
   jwt:
-    issuer: http://localhost:8081
-    audience: roleradar-api
-    jwk-set-uri: http://localhost:8081/.well-known/jwks.json
+    issuer: ${VACANCY_JWT_ISSUER:http://localhost:8081}
+    audience: ${VACANCY_JWT_AUDIENCE:roleradar-api}
+    jwk-set-uri: ${VACANCY_JWK_SET_URI:http://localhost:8081/.well-known/jwks.json}
 
 springdoc:
   swagger-ui:
@@ -54,20 +54,21 @@ springdoc:
 roleradar:
   kafka:
     topics:
-      vacancy-upserted: vacancy-upserted
-      vacancy-upserted-dlt: vacancy-upserted-dlt
+      vacancy-upserted: ${KAFKA_TOPIC_VACANCY_UPSERTED:vacancy-upserted}
+      vacancy-upserted-dlt: ${KAFKA_TOPIC_VACANCY_UPSERTED_DLT:vacancy-upserted-dlt}
     consumer:
       retry:
-        max-attempts: 3
-        backoff-interval-ms: 1000
+        max-attempts: ${VACANCY_CONSUMER_RETRY_MAX_ATTEMPTS:3}
+        backoff-interval-ms: ${VACANCY_CONSUMER_RETRY_BACKOFF_INTERVAL_MS:1000}
+
   cleanup:
     processed-events:
-      cron: "0 0 * * * *"
-      retention-days: 30
+      cron: ${PROCESSED_EVENTS_CLEANUP_CRON:0 0 * * * *}
+      retention-days: ${PROCESSED_EVENTS_RETENTION_DAYS:30}
 
   vacancy:
     lifecycle:
-      stale-close-cron: "0 0 * * * *"
-      stale-close-threshold-hours: 48
-      closed-cleanup-cron: "0 30 0 * * *"
-      closed-retention-days: 30
+      stale-close-cron: ${VACANCY_STALE_CLOSE_CRON:0 0 * * * *}
+      stale-close-threshold-hours: ${VACANCY_STALE_CLOSE_THRESHOLD_HOURS:48}
+      closed-cleanup-cron: ${VACANCY_CLOSED_CLEANUP_CRON:0 30 0 * * *}
+      closed-retention-days: ${VACANCY_CLOSED_RETENTION_DAYS:30}

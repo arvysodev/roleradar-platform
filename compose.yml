@@ -43,14 +43,12 @@ services:
     environment:
       KAFKA_NODE_ID: 1
       KAFKA_PROCESS_ROLES: broker,controller
-
       KAFKA_LISTENERS: PLAINTEXT://:9092,PLAINTEXT_INTERNAL://:29092,CONTROLLER://:9093
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092,PLAINTEXT_INTERNAL://kafka:29092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_INTERNAL:PLAINTEXT,CONTROLLER:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT_INTERNAL
       KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
       KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
-
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: 1
@@ -73,6 +71,69 @@ services:
     ports:
       - "8025:8025"
       - "1025:1025"
+
+  auth-service:
+    build:
+      context: ./services/auth-service
+    container_name: roleradar-auth-service
+    depends_on:
+      - postgres-auth
+      - kafka
+    env_file:
+      - ./.env.auth
+    ports:
+      - "8081:8081"
+    volumes:
+      - ./services/auth-service/secrets/auth/jwt-private.pem:/run/secrets/auth-jwt-private.pem:ro
+
+  vacancy-service:
+    build:
+      context: ./services/vacancy-service
+    container_name: roleradar-vacancy-service
+    depends_on:
+      - postgres-vacancy
+      - kafka
+      - auth-service
+    env_file:
+      - ./.env.vacancy
+    ports:
+      - "8082:8082"
+
+  ingestion-service:
+    build:
+      context: ./services/ingestion-service
+    container_name: roleradar-ingestion-service
+    depends_on:
+      - kafka
+    env_file:
+      - ./.env.ingestion
+    ports:
+      - "8083:8083"
+
+  notification-service:
+    build:
+      context: ./services/notification-service
+    container_name: roleradar-notification-service
+    depends_on:
+      - kafka
+      - mailpit
+      - auth-service
+    env_file:
+      - ./.env.notification
+    ports:
+      - "8084:8084"
+
+  gateway:
+    build:
+      context: ./services/gateway
+    container_name: roleradar-gateway
+    depends_on:
+      - auth-service
+      - vacancy-service
+    env_file:
+      - ./.env.gateway
+    ports:
+      - "8080:8080"
 
 volumes:
   postgres_auth_data:

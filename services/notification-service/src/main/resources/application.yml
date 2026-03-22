@@ -3,21 +3,21 @@ spring:
     name: notification-service
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${NOTIFICATION_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     consumer:
-      group-id: notification-service-v1
-      auto-offset-reset: earliest
+      group-id: ${NOTIFICATION_KAFKA_CONSUMER_GROUP_ID:notification-service-v1}
+      auto-offset-reset: ${NOTIFICATION_KAFKA_AUTO_OFFSET_RESET:earliest}
 
   mail:
-    host: localhost
-    port: 1025
+    host: ${NOTIFICATION_MAIL_HOST:localhost}
+    port: ${NOTIFICATION_MAIL_PORT:1025}
 
 server:
-  port: 8084
+  port: ${NOTIFICATION_SERVER_PORT:8084}
 
 roleradar:
   kafka:
     topics:
-      email-verification-requested: auth.email-verification-requested
+      email-verification-requested: ${KAFKA_TOPIC_EMAIL_VERIFICATION_REQUESTED:auth.email-verification-requested}
   auth:
-    verify-email-base-url: http://localhost:8081/api/v1/auth/verify-email
+    verify-email-base-url: ${NOTIFICATION_AUTH_VERIFY_EMAIL_BASE_URL:http://localhost:8081/api/v1/auth/verify-email}

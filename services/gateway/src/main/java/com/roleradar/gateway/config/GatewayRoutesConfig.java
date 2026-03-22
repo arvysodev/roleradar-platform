@@ -46,7 +46,7 @@ public class GatewayRoutesConfig {
                                         )
                                 )
                         )
-                        .uri("http://localhost:8081"))
+                        .uri("http://auth-service:8081"))
                 .route("auth-service-refresh", r -> r
                         .path("/api/v1/auth/refresh")
                         .filters(f -> f
@@ -77,7 +77,7 @@ public class GatewayRoutesConfig {
                                         )
                                 )
                         )
-                        .uri("http://localhost:8081"))
+                        .uri("http://auth-service:8081"))
                 .route("auth-service-logout", r -> r
                         .path("/api/v1/auth/logout")
                         .filters(f -> f
@@ -97,17 +97,17 @@ public class GatewayRoutesConfig {
                                 .addResponseHeader("Set-Cookie", accessTokenCookieFactory.clear().toString())
                                 .addResponseHeader("Set-Cookie", refreshTokenCookieFactory.clear().toString())
                         )
-                        .uri("http://localhost:8081"))
+                        .uri("http://auth-service:8081"))
                 .route("auth-service-other", r -> r
                         .path("/api/v1/auth/**")
-                        .uri("http://localhost:8081"))
+                        .uri("http://auth-service:8081"))
                 .route("auth-service-openapi", r -> r
                         .path("/aggregate/auth-service/**")
                         .filters(f -> f.stripPrefix(2))
-                        .uri("http://localhost:8081"))
+                        .uri("http://auth-service:8081"))
                 .route("vacancy-service", r -> r
                         .path("/api/v1/vacancies/**")
-                        .uri("http://localhost:8082"))
+                        .uri("http://auth-service:8082"))
                 .build();
     }
 

@@ -17,7 +17,7 @@ logs/
 # Env files
 .env
 .env.*
-!.env.example
+!.env.*.example
 
 # Java / Gradle
 **/build/
@@ -44,3 +44,6 @@ docker-compose.override.yml
 # Temp
 tmp/
 temp/
+
+# Keys
+*.pem

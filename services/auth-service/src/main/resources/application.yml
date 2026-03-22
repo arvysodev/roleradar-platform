@@ -3,9 +3,9 @@ spring:
     name: auth-service
 
   datasource:
-    url: jdbc:postgresql://localhost:5433/auth_db
-    username: auth_user
-    password: auth_password
+    url: ${AUTH_DB_URL:jdbc:postgresql://localhost:5433/auth_db}
+    username: ${AUTH_DB_USERNAME:auth_user}
+    password: ${AUTH_DB_PASSWORD:auth_password}
     driver-class-name: org.postgresql.Driver
 
   jpa:
@@ -22,7 +22,7 @@ spring:
     locations: classpath:db/migration
 
   kafka:
-    bootstrap-servers: localhost:9092
+    bootstrap-servers: ${AUTH_KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JacksonJsonSerializer
@@ -37,22 +37,22 @@ springdoc:
 
 security:
   jwt:
-    issuer: http://localhost:8081
-    audience: roleradar-api
-    key-id: auth-rsa-key-1
-    access-token-ttl-seconds: 900
-    refresh-token-ttl-seconds: 2592000
-    private-key-location: ${JWT_PRIVATE_KEY_LOCATION:classpath:keys/jwt-private.pem}
+    issuer: ${AUTH_JWT_ISSUER:http://localhost:8081}
+    audience: ${AUTH_JWT_AUDIENCE:roleradar-api}
+    key-id: ${AUTH_JWT_KEY_ID:auth-rsa-key-1}
+    access-token-ttl-seconds: ${AUTH_JWT_ACCESS_TOKEN_TTL_SECONDS:900}
+    refresh-token-ttl-seconds: ${AUTH_JWT_REFRESH_TOKEN_TTL_SECONDS:2592000}
+    private-key-location: ${AUTH_JWT_PRIVATE_KEY_LOCATION}
 
 roleradar:
   kafka:
     topics:
-      email-verification-requested: auth.email-verification-requested
+      email-verification-requested: ${AUTH_KAFKA_TOPIC_EMAIL_VERIFICATION_REQUESTED:auth.email-verification-requested}
   cleanup:
     refresh-tokens:
-      cron: "0 15 * * * *"
-      expired-retention-days: 0
-      revoked-retention-days: 7
+      cron: ${AUTH_REFRESH_TOKEN_CLEANUP_CRON:0 15 * * * *}
+      expired-retention-days: ${AUTH_REFRESH_TOKEN_EXPIRED_RETENTION_DAYS:0}
+      revoked-retention-days: ${AUTH_REFRESH_TOKEN_REVOKED_RETENTION_DAYS:7}
 
 server:
-  port: 8081
+  port: ${AUTH_SERVER_PORT:8081}
