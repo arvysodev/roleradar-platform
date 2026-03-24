@@ -15,6 +15,13 @@ server:
 
 roleradar:
   ingestion:
+    http:
+      connect-timeout-seconds: ${INGESTION_HTTP_CONNECT_TIMEOUT_SECONDS:5}
+      read-timeout-seconds: ${INGESTION_HTTP_READ_TIMEOUT_SECONDS:10}
+      retry:
+        max-retries: ${INGESTION_HTTP_RETRY_MAX_RETRIES:2}
+        delay-millis: ${INGESTION_HTTP_RETRY_DELAY_MILLIS:1000}
+
     scheduling:
       enabled: ${INGESTION_SCHEDULING_ENABLED:true}
       remotive-cron: ${INGESTION_REMOTIVE_CRON:0 0 */8 * * *}

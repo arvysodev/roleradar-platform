@@ -23,18 +23,6 @@ services:
     volumes:
       - postgres_vacancy_data:/var/lib/postgresql/data
 
-  postgres-ingestion:
-    image: postgres:17
-    container_name: roleradar-postgres-ingestion
-    environment:
-      POSTGRES_DB: ingestion_db
-      POSTGRES_USER: ingestion_user
-      POSTGRES_PASSWORD: ingestion_password
-    ports:
-      - "5435:5432"
-    volumes:
-      - postgres_ingestion_data:/var/lib/postgresql/data
-
   kafka:
     image: apache/kafka:4.1.0
     container_name: roleradar-kafka
@@ -140,5 +128,4 @@ services:
 volumes:
   postgres_auth_data:
   postgres_vacancy_data:
-  postgres_ingestion_data:
   kafka_data:

@@ -41,7 +41,6 @@ public class IngestionService {
     private final String adzunaAppId;
     private final String adzunaAppKey;
     private final List<String> adzunaCountries;
-    private final List<String> adzunaSearchTerms;
 
     public IngestionService(RemotiveClient remotiveClient,
                             RemotiveVacancyMapper remotiveVacancyMapper,
@@ -58,8 +57,7 @@ public class IngestionService {
                             @Value("${roleradar.ingestion.adzuna.results-per-page}") int resultsPerPageAdzuna,
                             @Value("${roleradar.ingestion.adzuna.app-id}") String adzunaAppId,
                             @Value("${roleradar.ingestion.adzuna.app-key}") String adzunaAppKey,
-                            @Value("${roleradar.ingestion.adzuna.countries}") List<String> adzunaCountries,
-                            @Value("${roleradar.ingestion.adzuna.search-terms}") List<String> adzunaSearchTerms) {
+                            @Value("${roleradar.ingestion.adzuna.countries}") List<String> adzunaCountries) {
         this.remotiveClient = remotiveClient;
         this.remotiveVacancyMapper = remotiveVacancyMapper;
         this.ingestionEventPublisher = ingestionEventPublisher;
@@ -76,7 +74,6 @@ public class IngestionService {
         this.adzunaAppId = adzunaAppId;
         this.adzunaAppKey = adzunaAppKey;
         this.adzunaCountries = adzunaCountries;
-        this.adzunaSearchTerms = adzunaSearchTerms;
     }
 
     public IngestionRunResult ingestRemotiveVacancies() {
