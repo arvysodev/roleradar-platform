@@ -1,6 +1,7 @@
 # RoleRadar
 
 RoleRadar is a backend-focused pet project designed as a microservices-based job aggregation platform.
+The project is structured as a monorepo containing multiple Spring Boot services.
 
 > ## Architectural note  
 > This project is intentionally implemented using a microservices + event-driven architecture, even though the domain could be handled with a simpler modular monolith.  
