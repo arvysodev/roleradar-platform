@@ -60,7 +60,6 @@ services:
     container_name: roleradar-mailpit
     ports:
       - "8025:8025"
-      - "1025:1025"
 
   auth-service:
     build:
@@ -71,8 +70,6 @@ services:
       - kafka
     env_file:
       - ./.env.auth
-    ports:
-      - "8081:8081"
     volumes:
       - ./services/auth-service/secrets/auth/jwt-private.pem:/run/secrets/auth-jwt-private.pem:ro
     healthcheck:
@@ -92,8 +89,6 @@ services:
       - auth-service
     env_file:
       - ./.env.vacancy
-    ports:
-      - "8082:8082"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
       interval: 15s
@@ -109,8 +104,6 @@ services:
       - kafka
     env_file:
       - ./.env.ingestion
-    ports:
-      - "8083:8083"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
       interval: 15s
@@ -128,8 +121,6 @@ services:
       - auth-service
     env_file:
       - ./.env.notification
-    ports:
-      - "8084:8084"
     healthcheck:
       test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
       interval: 15s
