@@ -72,3 +72,19 @@ roleradar:
       stale-close-threshold-hours: ${VACANCY_STALE_CLOSE_THRESHOLD_HOURS:48}
       closed-cleanup-cron: ${VACANCY_CLOSED_CLEANUP_CRON:0 30 0 * * *}
       closed-retention-days: ${VACANCY_CLOSED_RETENTION_DAYS:30}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true

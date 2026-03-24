@@ -48,3 +48,19 @@ roleradar:
 
     topics:
       vacancy-upserted: ${INGESTION_KAFKA_TOPIC_VACANCY_UPSERTED:vacancy-upserted}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
