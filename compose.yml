@@ -75,6 +75,12 @@ services:
       - "8081:8081"
     volumes:
       - ./services/auth-service/secrets/auth/jwt-private.pem:/run/secrets/auth-jwt-private.pem:ro
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8081/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   vacancy-service:
     build:
@@ -88,6 +94,12 @@ services:
       - ./.env.vacancy
     ports:
       - "8082:8082"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8082/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   ingestion-service:
     build:
@@ -99,6 +111,12 @@ services:
       - ./.env.ingestion
     ports:
       - "8083:8083"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8083/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   notification-service:
     build:
@@ -112,6 +130,12 @@ services:
       - ./.env.notification
     ports:
       - "8084:8084"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8084/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   gateway:
     build:
@@ -124,6 +148,12 @@ services:
       - ./.env.gateway
     ports:
       - "8080:8080"
+    healthcheck:
+      test: [ "CMD", "curl", "-f", "http://localhost:8080/actuator/health" ]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
 volumes:
   postgres_auth_data:

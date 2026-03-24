@@ -40,7 +40,9 @@ public class SecurityConfig {
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/v3/api-docs/**",
-                                "/aggregate/**"
+                                "/aggregate/**",
+                                "/actuator/health",
+                                "/actuator/info"
                         ).permitAll()
                         .pathMatchers(HttpMethod.OPTIONS).permitAll()
                         .anyExchange().authenticated()

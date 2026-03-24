@@ -54,5 +54,21 @@ roleradar:
       expired-retention-days: ${AUTH_REFRESH_TOKEN_EXPIRED_RETENTION_DAYS:0}
       revoked-retention-days: ${AUTH_REFRESH_TOKEN_REVOKED_RETENTION_DAYS:7}
 
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info
+  endpoint:
+    health:
+      probes:
+        enabled: true
+      show-details: never
+  health:
+    livenessstate:
+      enabled: true
+    readinessstate:
+      enabled: true
+
 server:
   port: ${AUTH_SERVER_PORT:8081}

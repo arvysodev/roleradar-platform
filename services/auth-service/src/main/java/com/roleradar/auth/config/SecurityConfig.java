@@ -41,7 +41,9 @@ public class SecurityConfig {
                                 "/.well-known/jwks.json",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/v3/api-docs/**"
+                                "/v3/api-docs/**",
+                                "/actuator/health",
+                                "/actuator/info"
                         ).permitAll()
                         .requestMatchers("/api/v1/auth/me").authenticated()
                         .anyRequest().denyAll()
