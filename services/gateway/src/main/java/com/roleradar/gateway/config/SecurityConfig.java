@@ -1,5 +1,7 @@
 package com.roleradar.gateway.config;
 
+import com.roleradar.gateway.exception.ProblemDetailAccessDeniedHandler;
+import com.roleradar.gateway.exception.ProblemDetailAuthenticationEntryPoint;
 import com.roleradar.gateway.security.*;
 import com.roleradar.gateway.security.JwtAudienceValidator;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -23,11 +25,17 @@ public class SecurityConfig {
     @Bean
     SecurityWebFilterChain springSecurityFilterChain(ServerHttpSecurity http,
                                                      ReactiveJwtDecoder jwtDecoder,
-                                                     CookieProperties cookieProperties) {
+                                                     CookieProperties cookieProperties,
+                                                     ProblemDetailAuthenticationEntryPoint authenticationEntryPoint,
+                                                     ProblemDetailAccessDeniedHandler accessDeniedHandler) {
         return http
                 .csrf(csrf -> csrf
                         .csrfTokenRepository(CookieServerCsrfTokenRepository.withHttpOnlyFalse())
                         .csrfTokenRequestHandler(new ServerCsrfTokenRequestAttributeHandler())
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(authenticationEntryPoint)
+                        .accessDeniedHandler(accessDeniedHandler)
                 )
                 .authorizeExchange(exchanges -> exchanges
                         .pathMatchers(
