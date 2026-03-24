@@ -107,14 +107,14 @@ public class GatewayRoutesConfig {
                         .uri("http://auth-service:8081"))
                 .route("vacancy-service", r -> r
                         .path("/api/v1/vacancies/**")
-                        .uri("http://auth-service:8082"))
+                        .uri("http://vacancy-service:8082"))
                 .build();
     }
 
     private static String extractRequiredCookie(ServerHttpRequest request, String cookieName) {
         var cookie = request.getCookies().getFirst(cookieName);
 
-        if (cookie == null || cookie.getValue().isBlank()) {
+        if (cookie == null || cookie.getValue() == null || cookie.getValue().isBlank()) {
             throw new UnauthorizedException("Refresh token cookie is missing.");
         }
 

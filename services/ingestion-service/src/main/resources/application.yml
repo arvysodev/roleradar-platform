@@ -35,7 +35,6 @@ roleradar:
       app-id: ${ADZUNA_APP_ID:}
       app-key: ${ADZUNA_APP_KEY:}
       countries: ${ADZUNA_COUNTRIES:pl,de,nl,fr,es,it}
-      search-terms: ${ADZUNA_SEARCH_TERMS:java developer,backend developer,software engineer}
       max-jobs-per-run: ${ADZUNA_MAX_JOBS_PER_RUN:100}
       results-per-page: ${ADZUNA_RESULTS_PER_PAGE:50}
       max-pages-per-run: ${ADZUNA_MAX_PAGES_PER_RUN:3}
