@@ -88,4 +88,12 @@ public class User {
     void preUpdate() {
         updatedAt = LocalDateTime.now();
     }
+
+    public void disable() {
+        this.status = UserStatus.DISABLED;
+    }
+
+    public void activate() {
+        this.status = UserStatus.ACTIVE;
+    }
 }

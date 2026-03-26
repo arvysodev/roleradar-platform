@@ -117,6 +117,10 @@ public class AuthService {
         User user = userRepository.findByEmail(normalizedEmail)
                 .orElseThrow(() -> new UnauthorizedException("Invalid email or password."));
 
+        if (user.getStatus() == UserStatus.DISABLED) {
+            throw new UnauthorizedException("User is disabled.");
+        }
+
         if (!passwordEncoder.matches(request.password(), user.getPasswordHash())) {
             throw new UnauthorizedException("Invalid email or password.");
         }
