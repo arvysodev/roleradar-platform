@@ -12,17 +12,26 @@ public final class VacancySpecifications {
     }
 
     public static Specification<Vacancy> withFilters(VacancyFilter filter) {
-        return Specification.allOf(
-                hasSource(filter.source()),
-                hasStatus(filter.status()),
-                hasRemote(filter.remote())
-        );
+        Specification<Vacancy> specification = hasStatus(filter.status());
+
+        Specification<Vacancy> sourceSpecification = hasSource(filter.source());
+        if (sourceSpecification != null) {
+            specification = specification.and(sourceSpecification);
+        }
+
+        Specification<Vacancy> remoteSpecification = hasRemote(filter.remote());
+        if (remoteSpecification != null) {
+            specification = specification.and(remoteSpecification);
+        }
+
+        return specification;
     }
 
     public static Specification<Vacancy> hasSource(VacancySource source) {
         if (source == null) {
             return null;
         }
+
         return (root, query, cb) -> cb.equal(root.get("source"), source);
     }
 
@@ -35,6 +44,7 @@ public final class VacancySpecifications {
         if (remote == null) {
             return null;
         }
+
         return (root, query, cb) -> cb.equal(root.get("remote"), remote);
     }
 }
