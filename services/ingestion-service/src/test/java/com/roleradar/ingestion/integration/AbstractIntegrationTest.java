@@ -14,6 +14,10 @@ abstract class AbstractIntegrationTest {
         registry.add("roleradar.ingestion.remotive.max-jobs-per-run", () -> "3");
         registry.add("roleradar.ingestion.arbeitnow.max-jobs-per-run", () -> "3");
         registry.add("roleradar.ingestion.arbeitnow.max-pages-per-run", () -> "2");
+        registry.add("roleradar.ingestion.scheduling.enabled", () -> "true");
+        registry.add("roleradar.ingestion.scheduling.remotive-cron", () -> "0 */5 * * * *");
+        registry.add("roleradar.ingestion.scheduling.arbeitnow-cron", () -> "0 */10 * * * *");
+        registry.add("roleradar.ingestion.scheduling.adzuna-cron", () -> "0 */15 * * * *");
 
         registry.add("roleradar.ingestion.adzuna.max-jobs-per-run", () -> "3");
         registry.add("roleradar.ingestion.adzuna.max-pages-per-run", () -> "2");
