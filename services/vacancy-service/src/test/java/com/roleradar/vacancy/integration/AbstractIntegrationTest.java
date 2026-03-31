@@ -9,7 +9,9 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
+import org.testcontainers.kafka.ConfluentKafkaContainer;
 import org.testcontainers.postgresql.PostgreSQLContainer;
+import org.testcontainers.utility.DockerImageName;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -21,8 +23,13 @@ abstract class AbstractIntegrationTest {
             .withUsername("vacancy_user")
             .withPassword("vacancy_password");
 
+    private static final ConfluentKafkaContainer KAFKA = new ConfluentKafkaContainer(
+            DockerImageName.parse("confluentinc/cp-kafka:7.8.1")
+    );
+
     static {
         POSTGRES.start();
+        KAFKA.start();
     }
 
     @Autowired
@@ -47,6 +54,6 @@ abstract class AbstractIntegrationTest {
         registry.add("security.jwt.audience", () -> "roleradar-api");
         registry.add("security.jwt.jwk-set-uri", () -> "http://localhost:8081/.well-known/jwks.json");
 
-        registry.add("spring.kafka.bootstrap-servers", () -> "localhost:9092");
+        registry.add("spring.kafka.bootstrap-servers", KAFKA::getBootstrapServers);
     }
 }
