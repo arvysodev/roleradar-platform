@@ -19,8 +19,7 @@ import static org.awaitility.Awaitility.await;
 
 @EmbeddedKafka(
         topics = "${roleradar.kafka.topics.vacancy-upserted}",
-        partitions = 1,
-        bootstrapServersProperty = "spring.kafka.bootstrap-servers"
+        partitions = 1
 )
 @DirtiesContext
 class VacancyKafkaIntegrationTest extends AbstractIntegrationTest {
