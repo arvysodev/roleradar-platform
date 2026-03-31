@@ -1,5 +1,7 @@
 package com.roleradar.gateway.config;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.roleradar.gateway.dto.AuthResponse;
 import com.roleradar.gateway.dto.AuthTokensGatewayResponse;
 import com.roleradar.gateway.dto.LogoutRequest;
@@ -8,8 +10,7 @@ import com.roleradar.gateway.exception.UnauthorizedException;
 import com.roleradar.gateway.security.AccessTokenCookieFactory;
 import com.roleradar.gateway.security.CookieProperties;
 import com.roleradar.gateway.security.RefreshTokenCookieFactory;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.cloud.gateway.route.RouteLocator;
 import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
 import org.springframework.context.annotation.Bean;
@@ -20,6 +21,7 @@ import org.springframework.http.server.reactive.ServerHttpRequest;
 import reactor.core.publisher.Mono;
 
 @Configuration
+@EnableConfigurationProperties(GatewayRouteProperties.class)
 public class GatewayRoutesConfig {
 
     @Bean
@@ -27,7 +29,8 @@ public class GatewayRoutesConfig {
                                            CookieProperties cookieProperties,
                                            AccessTokenCookieFactory accessTokenCookieFactory,
                                            RefreshTokenCookieFactory refreshTokenCookieFactory,
-                                           ObjectMapper objectMapper) {
+                                           ObjectMapper objectMapper,
+                                           GatewayRouteProperties gatewayRouteProperties) {
         return builder.routes()
                 .route("auth-service-login", r -> r
                         .path("/api/v1/auth/login")
@@ -46,7 +49,7 @@ public class GatewayRoutesConfig {
                                         )
                                 )
                         )
-                        .uri("http://auth-service:8081"))
+                        .uri(gatewayRouteProperties.authServiceUri()))
                 .route("auth-service-refresh", r -> r
                         .path("/api/v1/auth/refresh")
                         .filters(f -> f
@@ -77,7 +80,7 @@ public class GatewayRoutesConfig {
                                         )
                                 )
                         )
-                        .uri("http://auth-service:8081"))
+                        .uri(gatewayRouteProperties.authServiceUri()))
                 .route("auth-service-logout", r -> r
                         .path("/api/v1/auth/logout")
                         .filters(f -> f
@@ -97,17 +100,17 @@ public class GatewayRoutesConfig {
                                 .addResponseHeader("Set-Cookie", accessTokenCookieFactory.clear().toString())
                                 .addResponseHeader("Set-Cookie", refreshTokenCookieFactory.clear().toString())
                         )
-                        .uri("http://auth-service:8081"))
+                        .uri(gatewayRouteProperties.authServiceUri()))
                 .route("auth-service-other", r -> r
                         .path("/api/v1/auth/**")
-                        .uri("http://auth-service:8081"))
+                        .uri(gatewayRouteProperties.authServiceUri()))
                 .route("auth-service-openapi", r -> r
                         .path("/aggregate/auth-service/**")
                         .filters(f -> f.stripPrefix(2))
-                        .uri("http://auth-service:8081"))
+                        .uri(gatewayRouteProperties.authServiceUri()))
                 .route("vacancy-service", r -> r
                         .path("/api/v1/vacancies/**")
-                        .uri("http://vacancy-service:8082"))
+                        .uri(gatewayRouteProperties.vacancyServiceUri()))
                 .build();
     }
 

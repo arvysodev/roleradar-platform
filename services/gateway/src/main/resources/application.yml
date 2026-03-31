@@ -38,3 +38,9 @@ management:
       enabled: true
     readinessstate:
       enabled: true
+
+gateway:
+  routes:
+    auth-service-uri: ${GATEWAY_AUTH_SERVICE_URI:http://auth-service:8081}
+    vacancy-service-uri: ${GATEWAY_VACANCY_SERVICE_URI:http://vacancy-service:8082}
+
