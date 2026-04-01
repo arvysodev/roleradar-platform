@@ -43,7 +43,6 @@ abstract class AbstractIntegrationTest {
         registry.add("spring.datasource.username", POSTGRES::getUsername);
         registry.add("spring.datasource.password", POSTGRES::getPassword);
 
-        registry.add("security.jwt.private-key-location", () -> "file:secrets/auth/jwt-private.pem");
         registry.add("spring.kafka.bootstrap-servers", () -> "localhost:9092");
     }
 }
