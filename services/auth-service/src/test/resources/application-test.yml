@@ -1,0 +1,3 @@
+security:
+  jwt:
+    private-key-location: classpath:keys/test-jwt-private.pem

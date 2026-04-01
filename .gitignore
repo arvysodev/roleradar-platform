@@ -47,3 +47,4 @@ temp/
 
 # Keys
 *.pem
+!services/auth-service/src/test/resources/keys/test-jwt-private.pem
