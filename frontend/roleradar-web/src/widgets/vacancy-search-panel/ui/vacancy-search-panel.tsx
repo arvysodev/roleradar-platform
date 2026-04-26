@@ -19,7 +19,7 @@ export function VacancySearchPanel() {
           </Badge>
           <div className="space-y-2">
             <h1 className="max-w-3xl text-4xl leading-tight font-semibold tracking-tight text-balance sm:text-5xl">
-              Track strong backend roles without losing time in noisy job boards.
+              Track strong roles without losing time in noisy job boards.
             </h1>
             <p className="max-w-2xl text-base leading-7 text-muted-foreground">
               The first frontend pass should help you search, filter, and scan roles quickly. We are
