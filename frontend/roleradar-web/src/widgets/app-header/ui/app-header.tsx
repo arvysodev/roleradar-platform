@@ -1,4 +1,5 @@
 import { BellDot, Radar, UserRound } from 'lucide-react'
+import { Link } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -27,7 +28,7 @@ export function AppHeader() {
           <BellDot className="size-4" />
           Alerts
         </Button>
-        <Button size="sm" className="rounded-full">
+        <Button size="sm" className="rounded-full" render={<Link to="/login" />}>
           <UserRound className="size-4" />
           Sign in
         </Button>
