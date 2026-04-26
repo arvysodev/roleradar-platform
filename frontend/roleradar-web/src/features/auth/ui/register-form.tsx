@@ -1,6 +1,6 @@
-import { AlertCircle, CheckCircle2, LoaderCircle, UserPlus } from 'lucide-react'
+import { AlertCircle, LoaderCircle, UserPlus } from 'lucide-react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Button } from '@/components/ui/button'
@@ -16,6 +16,7 @@ const initialForm = {
 
 export function RegisterForm() {
   const registerMutation = useRegisterMutation()
+  const navigate = useNavigate()
   const [form, setForm] = useState(initialForm)
 
   const errorMessage =
@@ -35,44 +36,14 @@ export function RegisterForm() {
   async function handleSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    await registerMutation.mutateAsync(form)
-  }
+    const registeredUser = await registerMutation.mutateAsync(form)
+    const searchParams = new URLSearchParams({
+      email: registeredUser.email,
+    })
 
-  if (registerMutation.isSuccess) {
-    return (
-      <div className="space-y-4">
-        <Alert className="rounded-2xl border-emerald-500/25 bg-emerald-500/8 text-foreground">
-          <CheckCircle2 className="size-4 text-emerald-700" />
-          <AlertTitle>Account created</AlertTitle>
-          <AlertDescription>
-            We created your account and sent a verification email. For local development, check Mailpit and
-            open the verification link before signing in.
-          </AlertDescription>
-        </Alert>
-
-        <div className="rounded-2xl bg-muted/55 p-4 text-sm leading-6 text-muted-foreground">
-          <p>
-            Email:
-            {' '}
-            <span className="font-medium text-foreground">{registerMutation.data.email}</span>
-          </p>
-          <p>
-            Username:
-            {' '}
-            <span className="font-medium text-foreground">{registerMutation.data.username}</span>
-          </p>
-          <p>
-            Status:
-            {' '}
-            <span className="font-medium text-foreground">{registerMutation.data.status}</span>
-          </p>
-        </div>
-
-        <Button size="lg" className="h-11 w-full rounded-xl" render={<Link to="/login" />}>
-          Continue to sign in
-        </Button>
-      </div>
-    )
+    navigate(`/verify-email/pending?${searchParams.toString()}`, {
+      replace: true,
+    })
   }
 
   return (

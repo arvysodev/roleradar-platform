@@ -1,6 +1,7 @@
 import { ChevronLeft, MailCheck, Radar } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
+import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
 import { RegisterForm } from '@/features/auth/ui/register-form'
 
@@ -37,6 +38,12 @@ export function RegisterPage() {
               Registration stays aligned with the backend flow: create the account through the Gateway,
               then verify email before the first sign-in.
             </p>
+
+            <div>
+              <Button variant="outline" size="lg" className="rounded-full" render={<Link to="/login" />}>
+                Back to login
+              </Button>
+            </div>
 
             <div className="rounded-[1.75rem] border border-border/70 bg-white/75 p-5 shadow-[0_18px_72px_-60px_rgba(15,23,42,0.45)] backdrop-blur">
               <div className="mb-3 inline-flex rounded-2xl bg-emerald-500/10 p-2.5 text-emerald-700">

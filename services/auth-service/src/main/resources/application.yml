@@ -48,6 +48,8 @@ roleradar:
   kafka:
     topics:
       email-verification-requested: ${AUTH_KAFKA_TOPIC_EMAIL_VERIFICATION_REQUESTED:auth.email-verification-requested}
+  frontend:
+    login-url: ${AUTH_FRONTEND_LOGIN_URL:http://localhost:5173/login}
   cleanup:
     refresh-tokens:
       cron: ${AUTH_REFRESH_TOKEN_CLEANUP_CRON:0 15 * * * *}

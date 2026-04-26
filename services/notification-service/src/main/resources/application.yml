@@ -20,7 +20,7 @@ roleradar:
     topics:
       email-verification-requested: ${KAFKA_TOPIC_EMAIL_VERIFICATION_REQUESTED:auth.email-verification-requested}
   auth:
-    verify-email-base-url: ${NOTIFICATION_AUTH_VERIFY_EMAIL_BASE_URL:http://localhost:8081/api/v1/auth/verify-email}
+    verify-email-base-url: ${NOTIFICATION_AUTH_VERIFY_EMAIL_BASE_URL:http://localhost:8080/api/v1/auth/verify-email}
 
 management:
   endpoints:

@@ -4,20 +4,29 @@ import com.roleradar.auth.dto.*;
 import com.roleradar.auth.service.AuthService;
 import com.roleradar.auth.dto.AuthTokens;
 import jakarta.validation.Valid;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/auth")
 public class AuthController {
 
     private final AuthService authService;
+    private final String frontendLoginUrl;
 
-    public AuthController(AuthService authService) {
+    public AuthController(
+            AuthService authService,
+            @Value("${roleradar.frontend.login-url}") String frontendLoginUrl
+    ) {
         this.authService = authService;
+        this.frontendLoginUrl = frontendLoginUrl;
     }
 
     @PostMapping("/register")
@@ -27,9 +36,13 @@ public class AuthController {
     }
 
     @GetMapping("/verify-email")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void verifyEmail(@RequestParam("token") String token) {
+    public ResponseEntity<Void> verifyEmail(@RequestParam("token") String token) {
         authService.verifyEmail(token);
+
+        return ResponseEntity
+                .status(HttpStatus.FOUND)
+                .location(URI.create(frontendLoginUrl))
+                .build();
     }
 
     @PostMapping("/login")
