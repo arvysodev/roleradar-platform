@@ -54,7 +54,7 @@ export function LoginForm() {
           type="email"
           value={form.email}
           onChange={(event) => updateField('email', event.target.value)}
-          placeholder="artem@example.com"
+          placeholder="test@example.com"
           autoComplete="email"
           required
           className="h-11 rounded-xl"

@@ -6,9 +6,26 @@ export type LoginPayload = {
   password: string
 }
 
+export type RegisterPayload = {
+  email: string
+  username: string
+  password: string
+}
+
 export type LoginResponse = {
   tokenType: string
   expiresIn: number
+}
+
+export type RegisteredUser = {
+  id: string
+  email: string
+  username: string
+  role: string
+  status: string
+  createdAt: string
+  updatedAt: string
+  emailVerified: boolean
 }
 
 export type CurrentUser = {
@@ -28,6 +45,16 @@ export async function login(payload: LoginPayload) {
   const csrfToken = await ensureCsrfToken()
 
   return httpRequest<LoginResponse>('/api/v1/auth/login', {
+    method: 'POST',
+    body: payload,
+    headers: csrfHeaders(csrfToken),
+  })
+}
+
+export async function register(payload: RegisterPayload) {
+  const csrfToken = await ensureCsrfToken()
+
+  return httpRequest<RegisteredUser>('/api/v1/auth/register', {
     method: 'POST',
     body: payload,
     headers: csrfHeaders(csrfToken),
