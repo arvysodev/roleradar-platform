@@ -1,10 +1,32 @@
-import { BellDot, Radar, UserRound } from 'lucide-react'
-import { Link } from 'react-router-dom'
+import { BellDot, LoaderCircle, LogOut, Radar, UserRound } from 'lucide-react'
+import { Link, useNavigate } from 'react-router-dom'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
+import { authQueryKeys } from '@/features/auth/model/auth-query-keys'
+import { useCurrentUserQuery } from '@/features/auth/model/use-current-user-query'
+import { useLogoutMutation } from '@/features/auth/model/use-logout-mutation'
+import { queryClient } from '@/shared/lib/query-client'
 
 export function AppHeader() {
+  const navigate = useNavigate()
+  const currentUserQuery = useCurrentUserQuery()
+  const logoutMutation = useLogoutMutation()
+
+  const currentUser = currentUserQuery.data
+
+  async function handleLogout() {
+    await logoutMutation.mutateAsync(undefined, {
+      onSuccess: async () => {
+        await queryClient.invalidateQueries({
+          queryKey: authQueryKeys.currentUser,
+        })
+
+        navigate('/')
+      },
+    })
+  }
+
   return (
     <header className="flex flex-col gap-4 border-b border-border/70 py-6 sm:flex-row sm:items-center sm:justify-between">
       <div className="flex items-center gap-3">
@@ -28,10 +50,36 @@ export function AppHeader() {
           <BellDot className="size-4" />
           Alerts
         </Button>
-        <Button size="sm" className="rounded-full" render={<Link to="/login" />}>
-          <UserRound className="size-4" />
-          Sign in
-        </Button>
+        {currentUserQuery.isLoading ? (
+          <Button size="sm" className="rounded-full" disabled>
+            <LoaderCircle className="size-4 animate-spin" />
+            Checking session...
+          </Button>
+        ) : currentUser ? (
+          <Button
+            size="sm"
+            className="rounded-full"
+            onClick={handleLogout}
+            disabled={logoutMutation.isPending}
+          >
+            {logoutMutation.isPending ? (
+              <>
+                <LoaderCircle className="size-4 animate-spin" />
+                Logging out...
+              </>
+            ) : (
+              <>
+                <LogOut className="size-4" />
+                Logout
+              </>
+            )}
+          </Button>
+        ) : (
+          <Button size="sm" className="rounded-full" render={<Link to="/login" />}>
+            <UserRound className="size-4" />
+            Sign in
+          </Button>
+        )}
       </div>
     </header>
   )

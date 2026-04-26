@@ -42,7 +42,7 @@ class AuthEmailVerificationIntegrationTest extends AbstractIntegrationTest {
 
         mockMvc.perform(get("/api/v1/auth/verify-email")
                         .param("token", rawToken))
-                .andExpect(status().isNoContent());
+                .andExpect(status().isFound());
 
         User verifiedUser = userRepository.findById(savedUser.getId()).orElseThrow();
 
