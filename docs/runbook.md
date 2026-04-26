@@ -24,6 +24,12 @@ Frontend:
 
 - `frontend/roleradar-web` exists only as a placeholder for now
 
+AI-oriented local context:
+
+- `.ai-context/README.md`
+- `.ai-context/agents/`
+- `.ai-context/skills/`
+
 ## 2. Environment files
 
 Example env files already exist:
@@ -121,6 +127,13 @@ If you only have 10 minutes, revisit these areas first:
 - `services/vacancy-service/src/main/java/.../service/VacancyEventProcessingService.java`
 - `services/vacancy-service/src/main/java/.../service/VacancyIngestionService.java`
 - `services/vacancy-service/src/main/java/.../service/VacancyRaceRecoveryService.java`
+
+If you are using an AI assistant, ask it to read these before doing substantive work:
+
+- `.ai-context/README.md`
+- `docs/architecture.md`
+- `docs/runbook.md`
+- `docs/next-steps.md`
 
 ## 8. Known non-issues that can look scary
 

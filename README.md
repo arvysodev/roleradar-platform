@@ -62,6 +62,10 @@ More detail:
 - [Runbook](./docs/runbook.md)
 - [Next Steps](./docs/next-steps.md)
 
+AI-oriented local context:
+
+- [AI Context Pack](./.ai-context/README.md)
+
 ## Services
 
 ### `gateway`
@@ -197,3 +201,12 @@ This project is meant to be both:
 - a portfolio project that demonstrates practical engineering trade-offs, not just CRUD
 
 That is why some choices are intentionally more ambitious than the minimum needed for the domain.
+
+## AI Session Tip
+
+When starting a new AI-assisted session, the most useful files to read first are:
+
+- `./.ai-context/README.md`
+- `./docs/architecture.md`
+- `./docs/runbook.md`
+- `./docs/next-steps.md`
