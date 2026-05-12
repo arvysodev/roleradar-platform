@@ -52,7 +52,7 @@ export function RegisterPage() {
               <h2 className="text-lg font-semibold">Email verification is part of the flow</h2>
               <p className="mt-2 text-sm leading-6 text-muted-foreground">
                 After registration, the backend publishes a verification event and the notification service
-                sends the email. In local development, you can open the link from Mailpit.
+                sends the email. In local development, you can open the link from Mailpit. test
               </p>
             </div>
           </section>
